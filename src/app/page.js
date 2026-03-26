@@ -2,87 +2,10 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Flower, Waves, RefreshCw, Eye, BookOpen, Dna, Unlock, Brain, Sparkles, Target, Hexagon, Lightbulb, Flame, Wind, Settings, Heart } from 'lucide-react';
 
 /* ── Data ── */
-
-const VEDIC_PRINCIPLES = [
-  {
-    icon: Flower, title: 'Purusha vs. Prakriti',
-    summary: 'The duality of Pure Consciousness and Matter — and why we confuse them.',
-    body: 'Philosophy teaches that there is "Pure Consciousness" (Purusha) and "Matter/Nature" (Prakriti). Most people suffer because they confuse the two — they think they are their thoughts or their bodies. Yoga Nidra is the tool to separate them.',
-    keyTerm: 'Purusha', keyDef: 'The unchanging, witnessing consciousness that exists beyond thought and form.',
-    analogy: 'Like a movie projector (Purusha) vs. the movie on the screen (Prakriti). You are the projector, not the drama.',
-  },
-  {
-    icon: Waves, title: 'The Vrittis (Mental Whirlpools)',
-    summary: 'Your mind is a lake — thoughts are ripples that prevent you from seeing the bottom.',
-    body: 'The mind is like a lake. Thoughts are ripples (Vrittis) that prevent you from seeing the bottom. Yoga is defined as Chitta Vritti Nirodha — the cessation of the fluctuations of the mind. When the water is still, you see your true reflection.',
-    keyTerm: 'Chitta Vritti Nirodha', keyDef: 'The complete cessation of mental modifications — the very definition of Yoga (Sutra 1.2).',
-    analogy: 'A turbulent lake vs. a perfectly still one. The lakebottom (truth) was always there — you just couldn\'t see it.',
-  },
-  {
-    icon: RefreshCw, title: 'Samskaras (Subconscious Impressions)',
-    summary: 'Every action or trauma leaves a "groove" in your mind — Yoga Nidra rewrites them.',
-    body: 'Every action or trauma leaves a "groove" in your mind, like a scratch on a record. These Samskaras drive your habits, reactions, and fears. In the deep state of Yoga Nidra, you use a Sankalpa (Resolve) to re-write these grooves at the subconscious level.',
-    keyTerm: 'Sankalpa', keyDef: 'A sacred resolve or intention planted in the fertile soil of the subconscious during Yoga Nidra.',
-    analogy: 'Like reprogramming a vinyl record. The old scratches (trauma) keep playing the same song until you deliberately etch a new groove.',
-  },
-  {
-    icon: Eye, title: 'Pratyahara (Sense Withdrawal)',
-    summary: 'The specific "gate" Yoga Nidra uses — turning the senses inward.',
-    body: 'This is the specific "gate" Yoga Nidra uses. By turning the senses inward, you stop feeding the external world and start nourishing the internal one. It is the fifth limb of Patanjali\'s Ashtanga Yoga — the bridge between outer practice and inner mastery.',
-    keyTerm: 'Pratyahara', keyDef: 'The fifth limb of Yoga — sensory withdrawal that redirects awareness from external objects to the inner landscape.',
-    analogy: 'Like a turtle withdrawing its limbs into its shell. The world doesn\'t disappear — you simply stop reacting to it.',
-  },
-];
-
-const HARARI_PRINCIPLES = [
-  {
-    icon: BookOpen, title: 'The Myth-Making Animal',
-    summary: 'Humans cooperate through "Shared Fictions" — but those fictions can enslave us.',
-    body: 'Harari argues that what makes humans special is our ability to believe in "Shared Fictions" (nations, money, gods, corporations). These stories allow us to cooperate at scale, but they can also enslave us if we forget they are fictions. Most of what you believe about yourself is a story, not a fact.',
-    keyTerm: 'Shared Fictions', keyDef: 'Collectively believed narratives (money, nations, religions) that enable mass cooperation but aren\'t objectively real.',
-    analogy: 'Like playing a game where everyone agrees on the rules. The rules feel real — but they were invented. And they can be changed.',
-  },
-  {
-    icon: Dna, title: 'Algorithms & Dataism',
-    summary: 'Your body and brain are biological algorithms shaped by evolution.',
-    body: 'Harari views the human body and brain as a massive collection of biological algorithms shaped by millions of years of evolution. In the 21st century, external algorithms (Big Tech, AI) can now understand your desires and fears better than you do. The question is: who controls the algorithm?',
-    keyTerm: 'Biological Algorithm', keyDef: 'A methodical set of biochemical steps that process environmental inputs and produce emotional/behavioral outputs.',
-    analogy: 'Your craving for sugar is an algorithm written 200,000 years ago when calories were scarce. It\'s still running — but the environment has changed.',
-  },
-  {
-    icon: Unlock, title: 'The "Hacked" Human',
-    summary: 'External systems exploit your biological code against your interests.',
-    body: 'If an algorithm knows you are prone to anger or craving, it can trigger those feelings to sell you a product or a political idea. This is "hacking" the human — exploiting your biological code against your interests. Social media feeds, recommendation engines, and targeted ads are all designed to exploit your OS.',
-    keyTerm: 'Hacking', keyDef: 'Exploiting known vulnerabilities in your biochemical system — fear, anger, craving — to manipulate behavior for external gain.',
-    analogy: 'Like a hacker exploiting a security flaw. Your anger response is a "bug" that advertisers and algorithms know how to trigger.',
-  },
-  {
-    icon: Brain, title: 'Sovereignty through Observation',
-    summary: 'Know yourself better than the algorithms — the only path to freedom.',
-    body: 'Harari (a dedicated Vipassana meditator) believes the only way to remain free in the age of AI is to know yourself better than the algorithms do. You must observe your biochemical fluctuations to realize "this is just a sensation," not a command. Self-knowledge is the ultimate firewall.',
-    keyTerm: 'Cognitive Sovereignty', keyDef: 'The ability to observe and override your own biochemical impulses before external systems can exploit them.',
-    analogy: 'Like having root access to your own operating system. If you can see the code running, no one else can execute commands without your permission.',
-  },
-];
-
-const KOSHAS = [
-  { name: 'Annamaya', label: 'Physical Body', desc: 'Food sheath — the gross body of bones, muscles, and organs.' },
-  { name: 'Pranamaya', label: 'Energy Body', desc: 'Breath/prana sheath — the currents of vital life force.' },
-  { name: 'Manomaya', label: 'Mental Body', desc: 'Mind sheath — thoughts, emotions, and sensory processing.' },
-  { name: 'Vijnanamaya', label: 'Wisdom Body', desc: 'Intellect sheath — discernment, insight, and intuition.' },
-  { name: 'Anandamaya', label: 'Bliss Body', desc: 'Joy sheath — the layer closest to the true Self.' },
-];
-
-const BRAIN_SYSTEMS = [
-  { name: 'Reticular Activating System', abbr: 'RAS', desc: 'The brain\'s attention filter — decides what enters conscious awareness. Yoga Nidra\'s Sankalpa reprograms this gate.' },
-  { name: 'Default Mode Network', abbr: 'DMN', desc: 'The "monkey mind" — generates self-referential thought loops. Meditation quiets this network by up to 50%.' },
-  { name: 'Vagus Nerve', abbr: 'VN', desc: 'The body\'s "rest & digest" highway. Slow breathing during Yoga Nidra stimulates vagal tone, reducing cortisol.' },
-  { name: 'Prefrontal Cortex', abbr: 'PFC', desc: 'The CEO of the brain — handles planning and impulse control. Visualization stages strengthen PFC connections.' },
-  { name: 'Amygdala', abbr: 'AMG', desc: 'The threat detector — triggers fight-or-flight. Deep relaxation shrinks amygdala reactivity over time.' },
-];
 
 const STAGES = [
   { n: '01', name: 'Internalization',  vedic: 'Pratyahara — withdraw the five senses inward',              bio: 'Disconnect from the Algorithm — silence notifications & data streams', detail: 'The practice begins by drawing awareness away from the external environment. In the Vedic tradition, this is Pratyahara — the turtle withdrawing into its shell. In Harari\'s framework, this is the first act of digital sovereignty: unplugging from the feeds that hack your attention.' },
@@ -95,30 +18,12 @@ const STAGES = [
   { n: '08', name: 'Return',           vedic: 'Samadhi into waking — Atman unchanged',                      bio: 'System Reboot — upgraded OS, unhackable narrative', detail: 'Awareness is gently returned to the waking state. In the Vedic view, you return knowing the Atman was always unchanged. In Harari\'s framework, you reboot with an upgraded operating system — your narrative is now yours, not the algorithm\'s.' },
 ];
 
-const BRIDGE = [
-  { concept: 'The Mind',    vedic: 'A mirror covered in dust that needs cleaning.',              harari: 'A biological algorithm that can be hacked by external systems.' },
-  { concept: 'Suffering',   vedic: 'Caused by Avidya — ignorance of the True Self.',             harari: 'Caused by falling for "Shared Fictions" and biochemical triggers.' },
-  { concept: 'Meditation',  vedic: 'Connecting to the Divine / Universal Soul (Atman).',          harari: 'Debugging the code and observing the raw data of sensations.' },
-  { concept: 'The "Story"', vedic: 'Your Karma and the impressions of past lives.',               harari: 'The "Narrative Fiction" created by evolution and culture.' },
-  { concept: 'Yoga Nidra',  vedic: 'A journey through the Koshas to Bliss (Ananda).',            harari: 'A "System Restart" to reclaim authority from external tech.' },
-  { concept: 'Freedom',     vedic: 'Moksha — liberation from the cycle of birth and death.',      harari: 'Cognitive Sovereignty — unhackable by algorithms or politics.' },
-];
 
 /* ── Component ── */
 
 export default function HomePage() {
-  const [philoTab, setPhiloTab] = useState('vedic');
-  const [openAccordion, setOpenAccordion] = useState(null);
   const [openStage, setOpenStage] = useState(null);
   const [openBenefit, setOpenBenefit] = useState(null);
-
-  const isVedic = philoTab === 'vedic';
-  const principles = isVedic ? VEDIC_PRINCIPLES : HARARI_PRINCIPLES;
-
-  const handleTabSwitch = (tab) => {
-    setPhiloTab(tab);
-    setOpenAccordion(null);
-  };
 
   return (
     <div className="landing">
@@ -126,34 +31,40 @@ export default function HomePage() {
       <section className="hero">
         <div className="hero-glow" />
         <div className="container hero-container">
-          <span className="hero-label">THE OS FOR CONSCIOUSNESS</span>
-          <h1 className="hero-h1">
-            Program Your Mind<br />
-            <span className="hero-em">While You Rest</span>
-          </h1>
-          <p className="hero-sub">
-            Kosha uses generative AI to build personalized Yoga Nidra sessions —
-            ancient sleep-based meditation, reimagined through two distinct philosophical lenses.
-          </p>
-          <div className="hero-badges">
-            <span className="hero-badge">
-              <span className="hb-icon"><Sparkles size={14} strokeWidth={1.5} /></span> AI-Generated Scripts
-            </span>
-            <span className="hero-badge">
-              <span className="hb-icon"><Target size={14} strokeWidth={1.5} /></span> 8-Stage Structure
-            </span>
-            <span className="hero-badge">
-              <span className="hb-icon"><Hexagon size={14} strokeWidth={1.5} /></span> Two Philosophies
-            </span>
+          <div className="hero-text-col">
+            <span className="hero-label">THE OS FOR CONSCIOUSNESS</span>
+            <h1 className="hero-h1">
+              Program Your Mind<br />
+              <span className="hero-em">While You Rest</span>
+            </h1>
+            <p className="hero-sub">
+              Kosha uses generative AI to build personalized Yoga Nidra sessions —
+              ancient sleep-based meditation, reimagined through two distinct philosophical lenses.
+            </p>
+            <div className="hero-badges">
+              <span className="hero-badge">
+                <span className="hb-icon"><Sparkles size={14} strokeWidth={1.5} /></span> AI-Generated Scripts
+              </span>
+              <span className="hero-badge">
+                <span className="hb-icon"><Target size={14} strokeWidth={1.5} /></span> 8-Stage Structure
+              </span>
+              <span className="hero-badge">
+                <span className="hb-icon"><Hexagon size={14} strokeWidth={1.5} /></span> Two Philosophies
+              </span>
+            </div>
+            <div className="hero-cta">
+              <Link href="/session" className="btn-cta" id="start-session-cta">
+                Start a Session
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                </svg>
+              </Link>
+              <Link href="/tracker" className="btn-ghost-cta">View Tracker</Link>
+            </div>
           </div>
-          <div className="hero-cta">
-            <Link href="/session" className="btn-cta" id="start-session-cta">
-              Start a Session
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-              </svg>
-            </Link>
-            <Link href="/tracker" className="btn-ghost-cta">View Tracker</Link>
+          <div className="hero-image-col">
+            <div className="hero-orb"></div>
+            <Image src="/avatar/pose5.png" alt="Meditating avatar" width={500} height={500} className="hero-avatar" priority />
           </div>
         </div>
       </section>
@@ -265,180 +176,36 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── DEEP DIVE: Tabbed Philosophy Section ── */}
-      <section className="info-section philosophy-section" id="section-two-lenses">
+      {/* ── DEEP DIVE: Philosophy Hub Link ── */}
+      <section className="info-section philosophy-link-section" id="section-two-lenses">
         <div className="container">
-          <span className="section-tag">THE TWO LENSES</span>
-          <h2 className="section-h2" id="heading-two-lenses">Explore the philosophies behind Yoga Nidra</h2>
+          <span className="section-tag">THE PHILOSOPHIES</span>
+          <h2 className="section-h2" id="heading-two-lenses">Explore the foundation behind the operations</h2>
           <p className="section-body">
-            Two frameworks, one destination. Choose a lens to explore its core principles, visual models, and key terminology.
+            Kosha is built on the intersection of ancient wisdom and modern neuroscience. Explore the mental frameworks that power true cognitive sovereignity.
           </p>
-
-          {/* Tab Switcher */}
-          <div className="philo-tabs">
-            <button
-              className={`philo-tab ${isVedic ? 'tab-active vedic-active' : ''}`}
-              onClick={() => handleTabSwitch('vedic')}
-            >
-              <span className="tab-icon"><Flower size={24} strokeWidth={1.5} /></span>
-              <span className="tab-text">
-                <span className="tab-title">Traditional Yogic Philosophy</span>
-                <span className="tab-sub">The Vedic OS</span>
-              </span>
-            </button>
-            <button
-              className={`philo-tab ${!isVedic ? 'tab-active harari-active' : ''}`}
-              onClick={() => handleTabSwitch('harari')}
-            >
-              <span className="tab-icon"><Settings size={24} strokeWidth={1.5} /></span>
-              <span className="tab-text">
-                <span className="tab-title">Yuval Noah Harari&apos;s Philosophy</span>
-                <span className="tab-sub">The Algorithmic OS</span>
-              </span>
-            </button>
-          </div>
-
-          {/* Tab Content */}
-          <div className="philo-content">
-            {/* Description */}
-            <p className="philo-desc">
-              {isVedic
-                ? 'Rooted in the Yoga Sutras of Patanjali and the Upanishads, this path views the human being as a series of layers (Koshas) covering a divine, unchanging center (Atman). Yoga Nidra is the tool to peel back those layers.'
-                : 'Yuval Noah Harari (author of Sapiens and Homo Deus) offers a secular, historical, and biological perspective. He argues that humans are "hackable animals" — and the only defense is radical self-observation.'
-              }
-            </p>
-
-            <p className="expand-hint">Click any principle to explore its deeper meaning →</p>
-
-            {/* Accordion */}
-            <div className="accordion-list">
-              {principles.map((p, i) => {
-                const isOpen = openAccordion === i;
-                return (
-                  <div key={`${philoTab}-${i}`} className={`accordion-item glass-card ${isOpen ? 'accordion-open' : ''}`}>
-                    <button className="accordion-header" onClick={() => setOpenAccordion(isOpen ? null : i)}>
-                      <span className="accordion-icon"><p.icon size={24} strokeWidth={1.5} /></span>
-                      <div className="accordion-header-text">
-                        <span className="accordion-title">{p.title}</span>
-                        <span className="accordion-summary">{p.summary}</span>
-                      </div>
-                      <span className={`accordion-chevron ${isOpen ? 'chevron-open' : ''}`}>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="6 9 12 15 18 9"/>
-                        </svg>
-                      </span>
-                    </button>
-                    <div className={`accordion-body ${isOpen ? 'body-open' : ''}`}>
-                      <p className="ab-text">{p.body}</p>
-                      <div className="ab-cards">
-                        <div className="ab-mini-card">
-                          <span className="ab-mini-label">KEY TERM</span>
-                          <strong>{p.keyTerm}</strong>
-                          <p>{p.keyDef}</p>
-                        </div>
-                        <div className="ab-mini-card analogy-card">
-                          <span className="ab-mini-label">ANALOGY</span>
-                          <p>{p.analogy}</p>
-                        </div>
-                      </div>
-                    </div>
+          <div className="ph-wrapper">
+            <Link href="/philosophies" style={{ display: 'block', textDecoration: 'none', color: 'inherit' }}>
+              <div className="philo-hub-card">
+                <div className="phc-left">
+                  <div className="phc-content">
+                    <h3 className="phc-title">The Two Core Lenses</h3>
+                    <p className="phc-desc">Discover the principles, visual models, and key terminology of the Vedic and Harari frameworks.</p>
                   </div>
-                );
-              })}
-            </div>
-
-            {/* Conditional Visual: Koshas or Brain Systems */}
-            {isVedic ? (
-              <div className="koshas-section">
-                <h4 className="diagram-title">The 5 Koshas — Layers of Consciousness</h4>
-                <p className="diagram-desc">Yoga Nidra systematically traverses these layers, from the outermost physical body inward toward the Atman (True Self) at the center.</p>
-                <div className="koshas-diagram">
-                  {KOSHAS.map((k, i) => (
-                    <div key={i} className="kosha-ring" style={{ '--ring-index': i }}>
-                      <div className="kosha-content">
-                        <span className="kosha-sanskrit">{k.name}</span>
-                        <span className="kosha-english">{k.label}</span>
-                        <span className="kosha-desc">{k.desc}</span>
-                      </div>
-                    </div>
-                  ))}
-                  <div className="kosha-center">
-                    <span className="kosha-atman">Ātman</span>
-                    <span className="kosha-atman-sub">True Self</span>
+                  <div className="phc-arrow">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                   </div>
                 </div>
-              </div>
-            ) : (
-              <div className="brain-section">
-                <h4 className="diagram-title">Neural Systems Targeted by Yoga Nidra</h4>
-                <p className="diagram-desc">Modern neuroscience identifies these key brain systems that are directly influenced during each stage of a Yoga Nidra session.</p>
-                <div className="brain-grid">
-                  {BRAIN_SYSTEMS.map((sys, i) => (
-                    <div key={i} className="brain-node">
-                      <div className="bn-icon-wrap">
-                        <span className="bn-abbr">{sys.abbr}</span>
-                      </div>
-                      <div className="bn-body">
-                        <span className="bn-name">{sys.name}</span>
-                        <p className="bn-desc">{sys.desc}</p>
-                      </div>
-                    </div>
-                  ))}
+                <div className="phc-right">
+                  <div className="phc-orb"></div>
+                  <Image src="/avatar/pose4.png" alt="Meditating avatar" width={320} height={320} className="phc-avatar" priority />
                 </div>
               </div>
-            )}
-
-            {/* Goal Banner */}
-            <div className={`goal-banner glass-card ${isVedic ? 'vedic-goal' : 'bio-goal'}`}>
-              <span className="goal-label">THE GOAL</span>
-              <p className="goal-text">
-                {isVedic
-                  ? <><strong>Enlightenment (Samadhi)</strong> — realizing you are not the &quot;story&quot; of your life, but the silent witness observing it.</>
-                  : <><strong>Cognitive Sovereignty</strong> — seeing through the &quot;stories&quot; and &quot;hacks&quot; to maintain control over your own biological algorithm.</>
-                }
-              </p>
-            </div>
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* ── Bridge: How They Compare ── */}
-      <section className="info-section" id="section-bridge">
-        <div className="container">
-          <span className="section-tag">THE BRIDGE</span>
-          <h2 className="section-h2" id="heading-bridge">How the two philosophies compare</h2>
-          <p className="section-body">
-            Different languages, same destination. Both paths teach that you are being controlled by forces you don&apos;t fully see — and that deep observation is the way to freedom.
-          </p>
-          <div className="bridge-table">
-            <div className="bridge-header-row">
-              <div className="bh-concept-col"></div>
-              <div className="bh-vedic-col">
-                <span className="bh-dot vedic-dot"></span>
-                <span><Flower size={16} strokeWidth={1.5} className="inline-icon" /> Traditional Yogic</span>
-              </div>
-              <div className="bh-harari-col">
-                <span className="bh-dot harari-dot"></span>
-                <span><Settings size={16} strokeWidth={1.5} className="inline-icon" /> Harari / Bio-Hacker</span>
-              </div>
-            </div>
-            {BRIDGE.map((row, i) => (
-              <div key={row.concept} className="bridge-card">
-                <div className="bc-concept">
-                  <span className="bc-num">{String(i + 1).padStart(2, '0')}</span>
-                  <span className="bc-label">{row.concept}</span>
-                </div>
-                <div className="bc-vedic">
-                  <p>{row.vedic}</p>
-                </div>
-                <div className="bc-harari">
-                  <p>{row.harari}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* ── 8-Stage Journey (Interactive) ── */}
       <section className="info-section stages-section" id="section-8-stages">
@@ -460,7 +227,7 @@ export default function HomePage() {
 
           <div className="stages-grid">
             {STAGES.map((s, i) => {
-              const isOpen = openStage === i;
+              const isOpen = openStage !== null && Math.floor(openStage / 2) === Math.floor(i / 2);
               const phaseClass = i < 2 ? 'card-prepare' : i < 4 ? 'card-descend' : i < 7 ? 'card-transform' : 'card-return';
               return (
                 <div key={s.n} className={`stage-card ${phaseClass} ${isOpen ? 'stage-card-open' : ''}`}>
@@ -615,6 +382,8 @@ export default function HomePage() {
         </div>
       </section>
 
+
+
       {/* ── CTA ── */}
       <section className="cta-section" id="section-cta">
         <div className="container cta-inner">
@@ -626,6 +395,52 @@ export default function HomePage() {
               <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
             </svg>
           </Link>
+        </div>
+      </section>
+
+      {/* ── Blog ── */}
+      <section className="blog-section" id="section-blog">
+        <div className="container">
+          <div className="blog-header">
+            <div>
+              <span className="section-tag">FROM THE JOURNAL</span>
+              <h2 className="section-h2" style={{marginBottom: 0}}>Insights & Science</h2>
+            </div>
+          </div>
+
+          <div className="blog-grid">
+            <Link href="/blog/attention-currency" className="blog-card" id="blog-card-1">
+              <div className="blog-card-img-wrap">
+                <img src="/blog/attention-currency.png" alt="Meditation and neural networks" className="blog-card-img" />
+                <span className="blog-card-tag">Neuroscience</span>
+              </div>
+              <div className="blog-card-body">
+                <span className="blog-card-date">Mar 26, 2025 · 8 min read</span>
+                <h3 className="blog-card-title">Your Attention is Your Currency: How to Spend It on What Matters</h3>
+                <p className="blog-card-excerpt">How the Default Mode Network and Sensory Cortex create the ultimate see-saw for your mind.</p>
+                <span className="blog-card-link">
+                  Read Article
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </span>
+              </div>
+            </Link>
+
+            <Link href="/blog/biological-hack-nsdr" className="blog-card" id="blog-card-2">
+              <div className="blog-card-img-wrap">
+                <img src="/blog/biological-hack-nsdr.png" alt="Brain resisting digital hacking through NSDR" className="blog-card-img" />
+                <span className="blog-card-tag">Neuroscience</span>
+              </div>
+              <div className="blog-card-body">
+                <span className="blog-card-date">Mar 26, 2025 · 7 min read</span>
+                <h3 className="blog-card-title">The Biological Hack for Your Attention: Using NSDR to Reclaim Your Agency</h3>
+                <p className="blog-card-excerpt">Algorithms are designed to steal your focus. Here&apos;s how NSDR gives it back — using your own biology.</p>
+                <span className="blog-card-link">
+                  Read Article
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </span>
+              </div>
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -648,21 +463,32 @@ export default function HomePage() {
         .landing { padding-bottom: 0; }
 
         /* ── Hero ── */
+        .hero { position: relative; padding: var(--space-4xl) 0 var(--space-3xl); text-align: left; overflow: hidden; }
+        .hero-glow { position: absolute; top: 0; left: 10%; transform: translateX(-50%); width: 700px; height: 700px; border-radius: 50%; background: radial-gradient(circle, rgba(107,143,113,0.06) 0%, rgba(184,132,92,0.04) 40%, transparent 70%); pointer-events: none; z-index: 0; }
+        .hero-container { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2xl); align-items: center; }
+        
+        .hero-text-col { flex: 1; position: relative; z-index: 2; }
+        .hero-image-col { display: flex; justify-content: flex-end; position: relative; }
+        
+        .hero-avatar { position: relative; z-index: 2; width: 100%; max-width: 480px; height: auto; object-fit: contain; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.1)); animation: float 6s ease-in-out infinite; }
+        .hero-orb { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 440px; height: 440px; background: radial-gradient(circle, rgba(107,143,113,0.15), rgba(184,132,92,0.05)); border-radius: 50%; filter: blur(60px); z-index: 1; animation: pulse-orb 8s ease-in-out infinite alternate; }
+        
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        @keyframes pulse-orb { 0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.6; } 100% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; } }
+
         .hero-label { display: inline-block; font-size: 0.6875rem; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 0.16em; margin-bottom: var(--space-md); }
         .hero-h1 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; line-height: 1.08; color: var(--text-1); margin-bottom: var(--space-lg); }
         .hero-em { background: linear-gradient(135deg, var(--steel-light), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .hero-sub { font-size: 1.0625rem; color: var(--text-2); line-height: 1.7; max-width: 580px; margin: 0 auto var(--space-lg); }
-        .hero-cta { display: flex; align-items: center; justify-content: center; gap: var(--space-md); }
-
-        .hero { position: relative; padding: var(--space-4xl) 0 var(--space-3xl); text-align: center; overflow: hidden; }
-        .hero-glow { position: absolute; top: -40%; left: 50%; transform: translateX(-50%); width: 700px; height: 700px; border-radius: 50%; background: radial-gradient(circle, rgba(107,143,113,0.06) 0%, rgba(184,132,92,0.04) 40%, transparent 70%); pointer-events: none; z-index: 0; }
-        .hero-container { position: relative; z-index: 1; }
-        .hero-badges { display: flex; align-items: center; justify-content: center; gap: var(--space-md); flex-wrap: wrap; margin-bottom: var(--space-xl); }
+        .hero-sub { font-size: 1.0625rem; color: var(--text-2); line-height: 1.7; max-width: 580px; margin-bottom: var(--space-lg); }
+        .hero-badges { display: flex; align-items: center; justify-content: flex-start; gap: var(--space-md); flex-wrap: wrap; margin-bottom: var(--space-xl); }
         .hero-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 0.6875rem; font-weight: 600; color: var(--text-3); padding: 6px 14px; border-radius: var(--radius-full); border: 1px solid var(--border); background: var(--bg-raised); }
         .hb-icon { color: var(--steel); font-size: 0.625rem; }
+        .hero-cta { display: flex; align-items: center; justify-content: flex-start; gap: var(--space-md); }
 
-        .btn-cta { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: var(--radius-full); font-weight: 700; font-size: 0.9375rem; background: linear-gradient(135deg, var(--steel), var(--steel-dim)); color: white; box-shadow: 0 4px 24px var(--steel-glow); }
-        .btn-ghost-cta { padding: 14px 24px; border-radius: var(--radius-full); font-weight: 600; font-size: 0.9375rem; color: var(--text-2); border: 1px solid var(--border); }
+        .btn-cta { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: var(--radius-full); font-weight: 700; font-size: 0.9375rem; background: linear-gradient(135deg, var(--steel), var(--steel-dim)); color: white; box-shadow: 0 4px 24px var(--steel-glow); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 32px var(--steel-glow-strong); }
+        .btn-ghost-cta { padding: 14px 24px; border-radius: var(--radius-full); font-weight: 600; font-size: 0.9375rem; color: var(--text-2); border: 1px solid var(--border); transition: all 0.2s ease; }
+        .btn-ghost-cta:hover { background: var(--bg-glass-hover); color: var(--text-1); border-color: var(--text-3); }
 
         /* ── Sections ── */
         .info-section { padding: var(--space-3xl) 0; border-top: 1px solid var(--border); }
@@ -724,101 +550,63 @@ export default function HomePage() {
         .bw-pct { font-size: 0.75rem; font-weight: 700; color: var(--text-2); text-align: right; }
         .bw-note { font-size: 0.75rem; color: var(--text-3); margin-top: var(--space-md); line-height: 1.6; font-style: italic; }
 
-        /* ── Philosophy Tabs ── */
-        .philo-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-sm); margin-bottom: var(--space-xl); }
-        .philo-tab { display: flex; align-items: center; gap: var(--space-md); padding: var(--space-lg) var(--space-xl); border: 2px solid var(--border); border-radius: var(--radius-lg); background: var(--bg-raised); cursor: pointer; transition: all 0.25s ease; }
-
-        .tab-icon { font-size: 1.5rem; flex-shrink: 0; }
-        .tab-text { display: flex; flex-direction: column; gap: 2px; }
-        .tab-title { font-size: 0.875rem; font-weight: 700; color: var(--text-1); }
-        .tab-sub { font-size: 0.6875rem; color: var(--text-3); font-weight: 600; letter-spacing: 0.06em; }
-        .tab-active { box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
-        .vedic-active { border-color: var(--gold); background: linear-gradient(135deg, rgba(184,132,92,0.04), rgba(184,132,92,0.08)); }
-        .vedic-active .tab-sub { color: var(--gold); }
-        .harari-active { border-color: var(--steel); background: linear-gradient(135deg, rgba(107,143,113,0.04), rgba(107,143,113,0.08)); }
-        .harari-active .tab-sub { color: var(--steel); }
-        .philo-content { animation: fadeIn 0.3s ease; }
-        .philo-desc { font-size: 0.9375rem; color: var(--text-2); line-height: 1.7; max-width: 640px; margin-bottom: var(--space-lg); }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* ── Expand Hint ── */
-        .expand-hint { font-size: 0.75rem; color: var(--text-3); margin-bottom: var(--space-lg); font-style: italic; }
-
-        /* ── Accordion ── */
-        .accordion-list { display: flex; flex-direction: column; gap: var(--space-sm); margin-bottom: var(--space-2xl); }
-        .accordion-item { overflow: hidden; transition: box-shadow 0.3s ease; }
-        .accordion-open { box-shadow: 0 4px 24px rgba(0,0,0,0.06); }
-        .accordion-header { display: flex; align-items: center; gap: var(--space-md); width: 100%; padding: var(--space-lg) var(--space-xl); background: none; border: none; cursor: pointer; text-align: left; }
-        .accordion-icon { font-size: 1.5rem; flex-shrink: 0; }
-        .accordion-header-text { flex: 1; display: flex; flex-direction: column; gap: 4px; }
-        .accordion-title { font-size: 1rem; font-weight: 700; color: var(--text-1); }
-        .accordion-summary { font-size: 0.8125rem; color: var(--text-3); line-height: 1.5; }
-        .accordion-chevron { flex-shrink: 0; color: var(--text-3); transition: transform 0.3s ease; }
-        .chevron-open { transform: rotate(180deg); }
-
-        .accordion-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s ease; padding: 0 var(--space-xl); }
-        .body-open { max-height: 600px; padding: 0 var(--space-xl) var(--space-xl); }
+        /* ── Philosophy Hub Link ── */
+        .ph-wrapper { margin-top: var(--space-2xl); }
+        .philo-hub-card { 
+          display: flex; align-items: stretch; justify-content: space-between; gap: 0;
+          background: linear-gradient(135deg, var(--bg-raised), var(--bg-surface)); 
+          border: 1px solid var(--border); border-left: 6px solid var(--steel); 
+          border-radius: var(--radius-xl); text-decoration: none; 
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+          box-shadow: 0 4px 20px rgba(0,0,0,0.03), inset 0 1px 0 rgba(255,255,255,0.4);
+          position: relative; overflow: hidden;
+        }
+        .philo-hub-card::after {
+          content: ''; position: absolute; inset: 0; pointer-events: none;
+          background: linear-gradient(135deg, rgba(255,255,255,0.4), transparent);
+          opacity: 0; transition: opacity 0.4s ease;
+        }
+        .philo-hub-card:hover { 
+          transform: translateY(-4px); 
+          box-shadow: 0 20px 48px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.6); 
+          border-left-color: var(--gold);
+        }
+        .philo-hub-card:hover::after { opacity: 1; }
         
-        .inline-icon { display: inline-block; vertical-align: text-bottom; margin-right: 4px; margin-top: -2px; }
+        .phc-left { flex: 1; padding: var(--space-2xl) var(--space-3xl); display: flex; flex-direction: column; justify-content: center; gap: var(--space-xl); position: relative; z-index: 1; }
+        .phc-content {  }
+        
+        .phc-right { 
+          width: 320px; flex-shrink: 0; background: rgba(107,143,113,0.04);
+          display: flex; align-items: center; justify-content: center; 
+          position: relative; overflow: hidden; border-left: 1px solid var(--border);
+        }
+        .phc-orb {
+          position: absolute; top: 10%; right: 10%; width: 200px; height: 200px;
+          border-radius: 50%; background: var(--steel-glow); filter: blur(40px);
+          transition: transform 0.8s ease;
+        }
+        .philo-hub-card:hover .phc-orb { transform: scale(1.2) translate(-10px, 10px); background: var(--gold-glow); }
+        .phc-avatar { 
+          position: relative; z-index: 1; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+          filter: drop-shadow(0 10px 20px rgba(0,0,0,0.06));
+        }
+        .philo-hub-card:hover .phc-avatar { transform: scale(1.05); }
 
-        .ab-text { font-size: 0.875rem; color: var(--text-2); line-height: 1.7; margin-bottom: var(--space-lg); }
-        .ab-cards { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); }
-        .ab-mini-card { padding: var(--space-md); background: var(--bg-surface); border-radius: var(--radius-md); }
-        .ab-mini-card strong { display: block; font-size: 0.875rem; color: var(--text-1); margin-bottom: 4px; }
-        .ab-mini-card p { font-size: 0.75rem; color: var(--text-2); line-height: 1.6; }
-        .ab-mini-label { font-size: 0.5625rem; font-weight: 800; letter-spacing: 0.1em; color: var(--text-3); display: block; margin-bottom: 6px; }
-        .analogy-card { background: linear-gradient(135deg, var(--bg-surface), var(--bg-raised)); border-left: 3px solid var(--gold); }
+        .phc-title { font-size: 1.5rem; font-weight: 800; color: var(--text-1); margin-bottom: 12px; letter-spacing: -0.01em; }
+        .phc-desc { font-size: 1.0625rem; color: var(--text-2); line-height: 1.6; max-width: 600px; }
+        
+        .phc-arrow { 
+          color: var(--steel); display: flex; align-items: center; justify-content: center; 
+          width: 64px; height: 64px; border-radius: 50%; background: var(--bg-card); 
+          box-shadow: 0 4px 16px rgba(0,0,0,0.04); flex-shrink: 0; 
+          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); position: relative; z-index: 1; border: 1px solid rgba(107,143,113,0.15);
+        }
+        .philo-hub-card:hover .phc-arrow {
+          background: var(--gold); color: white; border-color: transparent;
+          transform: scale(1.1) translateX(4px); box-shadow: 0 12px 24px rgba(184, 132, 92, 0.25);
+        }
 
-        /* ── Koshas Diagram ── */
-        .koshas-section { margin-bottom: var(--space-2xl); }
-        .diagram-title { font-size: 1.125rem; font-weight: 700; margin-bottom: var(--space-sm); color: var(--text-1); }
-        .diagram-desc { font-size: 0.8125rem; color: var(--text-2); line-height: 1.6; margin-bottom: var(--space-xl); max-width: 540px; }
-
-        .koshas-diagram { position: relative; display: flex; flex-direction: column; gap: 0; padding: var(--space-lg) 0; }
-        .kosha-ring { padding: var(--space-md) var(--space-xl); border-left: 4px solid var(--gold); margin-left: calc(var(--ring-index) * 28px); background: var(--bg-raised); border-radius: 0 var(--radius-md) var(--radius-md) 0; margin-bottom: 6px; transition: transform 0.2s ease, box-shadow 0.2s ease; }
-
-        .kosha-content { display: flex; align-items: baseline; gap: var(--space-md); flex-wrap: wrap; }
-        .kosha-sanskrit { font-family: var(--font-heading); font-size: 0.9375rem; font-weight: 700; color: var(--gold); min-width: 120px; }
-        .kosha-english { font-size: 0.8125rem; font-weight: 600; color: var(--text-1); min-width: 100px; }
-        .kosha-desc { font-size: 0.75rem; color: var(--text-3); }
-        .kosha-center { margin-left: calc(5 * 28px); padding: var(--space-md) var(--space-xl); border-left: 4px solid var(--steel); background: linear-gradient(135deg, var(--bg-raised), var(--bg-surface)); border-radius: 0 var(--radius-md) var(--radius-md) 0; }
-        .kosha-atman { font-family: var(--font-heading); font-size: 1.125rem; font-weight: 800; color: var(--steel); }
-        .kosha-atman-sub { font-size: 0.75rem; color: var(--text-2); margin-left: var(--space-sm); }
-
-        /* ── Brain Systems ── */
-        .brain-section { margin-bottom: var(--space-2xl); }
-        .brain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-md); }
-        .brain-node { display: flex; gap: var(--space-lg); align-items: flex-start; padding: var(--space-xl); background: var(--bg-raised); border: 1px solid var(--border); border-radius: var(--radius-lg); }
-        .bn-icon-wrap { flex-shrink: 0; width: 56px; height: 56px; border-radius: var(--radius-md); background: linear-gradient(135deg, rgba(107,143,113,0.08), rgba(107,143,113,0.15)); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(107,143,113,0.12); }
-        .bn-abbr { font-family: var(--font-heading); font-size: 1rem; font-weight: 800; color: var(--steel); letter-spacing: -0.02em; }
-        .bn-body { flex: 1; }
-        .bn-name { display: block; font-size: 0.8125rem; font-weight: 700; color: var(--text-1); margin-bottom: 6px; }
-        .bn-desc { font-size: 0.8125rem; color: var(--text-2); line-height: 1.65; }
-
-        /* ── Goal Banners ── */
-        .goal-banner { padding: var(--space-lg) var(--space-xl); display: flex; align-items: center; gap: var(--space-lg); }
-        .goal-label { font-size: 0.5625rem; font-weight: 800; letter-spacing: 0.12em; padding: 4px 12px; border-radius: var(--radius-sm); white-space: nowrap; flex-shrink: 0; }
-        .vedic-goal .goal-label { background: rgba(184, 132, 92, 0.1); color: var(--gold); border: 1px solid rgba(184, 132, 92, 0.2); }
-        .bio-goal .goal-label { background: rgba(107, 143, 113, 0.1); color: var(--steel); border: 1px solid rgba(107, 143, 113, 0.2); }
-        .goal-text { font-size: 0.9375rem; color: var(--text-2); line-height: 1.6; }
-        .goal-text strong { color: var(--text-1); }
-
-        /* ── Bridge Table ── */
-        .bridge-table { display: flex; flex-direction: column; gap: 0; }
-        .bridge-header-row { display: grid; grid-template-columns: 140px 1fr 1fr; gap: 0; padding: 0 0 var(--space-md); }
-        .bh-concept-col { }
-        .bh-vedic-col, .bh-harari-col { display: flex; align-items: center; gap: 8px; font-size: 0.6875rem; font-weight: 700; color: var(--text-3); letter-spacing: 0.06em; padding: 0 var(--space-lg); }
-        .bh-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-        .vedic-dot { background: var(--gold); }
-        .harari-dot { background: var(--steel); }
-        .bridge-card { display: grid; grid-template-columns: 140px 1fr 1fr; gap: 0; border-bottom: 1px solid var(--border); transition: background 0.2s ease; }
-        .bridge-card:last-child { border-bottom: none; }
-        .bc-concept { padding: var(--space-lg); display: flex; flex-direction: column; gap: 2px; }
-        .bc-num { font-family: var(--font-heading); font-size: 0.6875rem; font-weight: 700; color: var(--text-3); }
-        .bc-label { font-size: 0.875rem; font-weight: 700; color: var(--text-1); }
-        .bc-vedic { padding: var(--space-lg); border-left: 3px solid rgba(184,132,92,0.25); }
-        .bc-harari { padding: var(--space-lg); border-left: 3px solid rgba(107,143,113,0.25); }
-        .bc-vedic p, .bc-harari p { font-size: 0.8125rem; color: var(--text-2); line-height: 1.6; font-style: italic; }
 
         /* ── Stages Section ── */
         .stages-section { position: relative; }
@@ -873,10 +661,47 @@ export default function HomePage() {
         .hw-title { font-size: 1rem; font-weight: 700; margin-bottom: var(--space-sm); }
         .hw-desc { font-size: 0.8125rem; color: var(--text-2); line-height: 1.6; }
 
+
         /* ── CTA Section ── */
         .cta-section { padding: var(--space-4xl) 0; border-top: 1px solid var(--border); text-align: center; }
         .cta-h2 { font-size: 2rem; font-weight: 800; margin-bottom: var(--space-sm); }
         .cta-sub { font-size: 0.9375rem; color: var(--text-2); margin-bottom: var(--space-xl); }
+
+        /* ── Blog Section ── */
+        .blog-section { padding: var(--space-3xl) 0; border-top: 1px solid var(--border); }
+        .blog-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: var(--space-xl); }
+        .blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-lg); }
+        .blog-card {
+          display: flex;
+          flex-direction: column;
+          background: var(--bg-raised);
+          border: 1px solid var(--border);
+          border-radius: var(--radius-lg);
+          overflow: hidden;
+          text-decoration: none;
+          color: inherit;
+          transition: transform 250ms ease, box-shadow 250ms ease;
+        }
+        .blog-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.07); }
+        .blog-card-img-wrap { position: relative; overflow: hidden; height: 180px; flex-shrink: 0; }
+        .blog-card-img { width: 100%; height: 100%; object-fit: cover; transition: transform 400ms ease; }
+        .blog-card:hover .blog-card-img { transform: scale(1.04); }
+        .blog-card-tag {
+          position: absolute; top: var(--space-sm); left: var(--space-sm);
+          font-size: 0.5625rem; font-weight: 700; letter-spacing: 0.06em;
+          color: white; background: rgba(0,0,0,0.48); backdrop-filter: blur(6px);
+          padding: 3px 10px; border-radius: var(--radius-full);
+        }
+        .blog-card-body { padding: var(--space-lg); display: flex; flex-direction: column; flex: 1; }
+        .blog-card-date { font-size: 0.625rem; color: var(--text-3); margin-bottom: var(--space-xs); display: block; letter-spacing: 0.03em; }
+        .blog-card-title { font-size: 0.9375rem; font-weight: 700; color: var(--text-1); line-height: 1.4; margin-bottom: var(--space-sm); }
+        .blog-card-excerpt { font-size: 0.8125rem; color: var(--text-2); line-height: 1.65; margin-bottom: var(--space-md); flex: 1; }
+        .blog-card-link {
+          display: inline-flex; align-items: center; gap: 5px;
+          font-size: 0.75rem; font-weight: 700; color: var(--gold);
+          transition: gap 200ms ease;
+        }
+        .blog-card:hover .blog-card-link { gap: 8px; }
 
         /* ── Footer ── */
         .site-footer { border-top: 1px solid var(--border); padding: var(--space-xl) 0; }
@@ -889,34 +714,37 @@ export default function HomePage() {
 
         /* ── Responsive ── */
         @media (max-width: 768px) {
-          .hero { padding: var(--space-2xl) 0; }
+          .hero { padding: var(--space-2xl) 0; text-align: center; }
+          .hero-container { grid-template-columns: 1fr; gap: var(--space-xl); text-align: center; }
           .hero-h1 { font-size: 2.25rem; }
-          .hero-cta { flex-direction: column; }
-          .philo-tabs { grid-template-columns: 1fr; }
-          .tab-title { font-size: 0.8125rem; }
-          .fact-grid { grid-template-columns: repeat(2, 1fr); }
-          .bw-row { grid-template-columns: 1fr; gap: var(--space-xs); }
-          .bw-track { height: 20px; }
-          .bw-pct { text-align: left; }
-          .ab-cards { grid-template-columns: 1fr; }
-          .kosha-ring { margin-left: calc(var(--ring-index) * 16px); }
-          .kosha-center { margin-left: calc(5 * 16px); }
-          .kosha-content { flex-direction: column; gap: 2px; }
-          .brain-grid { grid-template-columns: 1fr; }
-          .brain-node { gap: var(--space-md); }
-          .bridge-header-row, .bridge-card { grid-template-columns: 1fr; gap: 0; }
-          .bridge-header-row { display: none; }
-          .bc-concept { padding-bottom: var(--space-xs); }
-          .bc-vedic, .bc-harari { border-left: none; border-top: 1px solid var(--border); }
+          .hero-sub { margin-left: auto; margin-right: auto; }
+          .hero-badges { justify-content: center; }
+          .hero-cta { flex-direction: column; align-items: stretch; justify-content: center; }
+          .hero-image-col { justify-content: center; margin-top: var(--space-lg); }
+          .hero-avatar { max-width: 320px; }
+
+          .philo-hub-card { 
+            flex-direction: column; align-items: stretch; gap: 0;
+            padding: 0; border-left-width: 4px; border-radius: var(--radius-lg);
+          }
+          .phc-left { padding: var(--space-xl); gap: var(--space-xl); }
+          .phc-right { width: 100%; height: 320px; border-left: none; border-top: 1px solid var(--border); padding: var(--space-xl) 0; }
+          .phc-title { font-size: 1.25rem; }
+          .phc-desc { font-size: 0.9375rem; }
+          .phc-arrow { align-self: flex-start; width: 48px; height: 48px; }
+
           .stages-grid { grid-template-columns: 1fr; }
           .expand-compare { grid-template-columns: 1fr; }
           .sch-lenses { flex-direction: column; }
           .steps-row { flex-direction: column; }
           .hw-arrow { transform: rotate(90deg); justify-content: center; }
           .prep-grid { grid-template-columns: 1fr; }
+          .fact-grid { grid-template-columns: 1fr; }
           .callout-card { flex-direction: column; gap: var(--space-sm); }
           .footer-inner { flex-direction: column; gap: var(--space-md); text-align: center; }
           .footer-left { flex-direction: column; gap: var(--space-xs); }
+          .blog-grid { grid-template-columns: 1fr; }
+          .blog-card-img-wrap { height: 160px; }
         }
       `}</style>
     </div>

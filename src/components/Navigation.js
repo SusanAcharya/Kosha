@@ -27,10 +27,22 @@ export default function Navigation() {
             Session
           </Link>
           <Link
+            href="/philosophies"
+            className={`nav-link ${pathname === '/philosophies' ? 'active' : ''}`}
+          >
+            Philosophies
+          </Link>
+          <Link
             href="/tracker"
             className={`nav-link ${pathname === '/tracker' ? 'active' : ''}`}
           >
             Tracker
+          </Link>
+          <Link
+            href="/#section-blog"
+            className={`nav-link ${pathname.startsWith('/blog') ? 'active' : ''}`}
+          >
+            Blog
           </Link>
         </div>
 

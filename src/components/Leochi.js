@@ -80,6 +80,50 @@ const SESSION_STEPS = [
   },
 ];
 
+const PHILOSOPHIES_STEPS = [
+  {
+    target: 'h1',
+    scroll: 'body',
+    title: 'The Philosophy Hub',
+    body: 'Welcome to the foundation of Kosha. Here you can explore the mental frameworks that power true cognitive sovereignty.',
+    position: 'bottom',
+  },
+  {
+    target: '.philo-tabs',
+    scroll: '.philo-tabs',
+    title: 'Two Frameworks',
+    body: 'Switch between the ancient Vedic tradition and modern Neuroscience to see how they describe the exact same states of consciousness.',
+    position: 'bottom',
+  },
+  {
+    target: '#section-bridge',
+    scroll: '#section-bridge',
+    title: 'The Bridge',
+    body: 'This table maps the ancient terminology directly to modern biological mechanisms.',
+    position: 'bottom',
+  }
+];
+
+const TRACKER_STEPS = [
+  {
+    target: 'h1',
+    scroll: 'body',
+    title: 'Your Progress',
+    body: 'Track your journeys into deep rest. Consistency is the key to decoupling from the algorithm and regaining control of your attention.',
+    position: 'bottom',
+  }
+];
+
+const BLOG_STEPS = [
+  {
+    target: 'h1',
+    scroll: 'body',
+    title: 'Deep Dive',
+    body: 'Read our latest research, insights, and protocols on cognitive sovereignty and the science of sleep-based meditation.',
+    position: 'bottom',
+  }
+];
+
 export default function Leochi() {
   const pathname = usePathname();
   const router = useRouter();
@@ -91,7 +135,15 @@ export default function Leochi() {
 
   const isHomePage = pathname === '/';
   const isSessionPage = pathname === '/session';
-  const steps = isHomePage ? HOME_STEPS : isSessionPage ? SESSION_STEPS : [];
+  const isPhilosophiesPage = pathname === '/philosophies';
+  const isTrackerPage = pathname === '/tracker';
+  const isBlogPage = pathname.startsWith('/blog');
+
+  const steps = isHomePage ? HOME_STEPS : 
+                isSessionPage ? SESSION_STEPS : 
+                isPhilosophiesPage ? PHILOSOPHIES_STEPS :
+                isTrackerPage ? TRACKER_STEPS :
+                isBlogPage ? BLOG_STEPS : [];
 
   useEffect(() => {
     setMounted(true);
@@ -147,6 +199,7 @@ export default function Leochi() {
   }
 
   if (!mounted) return null;
+  if (isSessionPage) return null;
 
   const step = steps[currentStep];
 
@@ -214,8 +267,8 @@ export default function Leochi() {
         .leo-fab.hidden { display: none; }
 
         .leo-avatar-btn {
-          width: 100px;
-          height: 100px;
+          width: 140px;
+          height: 140px;
           border-radius: 0;
           border: none;
           background: transparent;
@@ -383,7 +436,7 @@ export default function Leochi() {
         /* ──── MOBILE ──── */
         @media (max-width: 640px) {
           .leo-fab { bottom: 12px; right: 12px; }
-          .leo-avatar-btn { width: 80px; height: 80px; }
+          .leo-avatar-btn { width: 110px; height: 110px; }
           .leo-bubble { font-size: 0.8125rem; padding: 8px 14px; }
 
           .leo-tooltip-fixed {

@@ -1,32 +1,33 @@
 'use client';
 
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import ModeCard from '@/components/ModeCard';
+import AudioEngine from '@/components/AudioEngine';
 import { Flame, Tornado, Snowflake, Zap, CloudRain, Scale, Sparkles, Activity, Sun, Moon, Lightbulb, Heart, Shield, Target, Eye, RefreshCw } from 'lucide-react';
 import { saveSession } from '@/lib/storage';
 
 /* ──── Survey Data ──── */
 const MOODS = [
-  { id: 'burnt-out',  icon: Flame, color: '#ef4444', label: 'Burnt Out',   desc: 'System overload. Need cooling and restoration.' },
-  { id: 'anxious',    icon: Tornado, color: '#f59e0b', label: 'Anxious',     desc: 'High frequency static. Seeking grounding.' },
-  { id: 'stuck',      icon: Snowflake, color: '#3b82f6', label: 'Stuck',       desc: 'Mental gridlock. Need a shift in perspective.' },
-  { id: 'scattered',  icon: Zap, color: '#8b5cf6', label: 'Scattered',   desc: 'Fragmented attention. Seeking center.' },
-  { id: 'sad',        icon: CloudRain, color: '#64748b', label: 'Low',         desc: 'Diminished energy. Gentle rising required.' },
-  { id: 'neutral',    icon: Scale, color: '#10b981', label: 'Neutral',     desc: 'Balanced baseline. Ready for optimization.' },
-  { id: 'curious',    icon: Sparkles, color: '#ec4899', label: 'Curious',     desc: 'Open systems. Ready to explore new depths.' },
-  { id: 'restless',   icon: Activity, color: '#f43f5e', label: 'Restless',    desc: 'Excessive kinetic energy. Redirecting focus.' },
+  { id: 'burnt-out', icon: Flame, color: '#ef4444', label: 'Burnt Out', desc: 'System overload. Need cooling and restoration.' },
+  { id: 'anxious', icon: Tornado, color: '#f59e0b', label: 'Anxious', desc: 'High frequency static. Seeking grounding.' },
+  { id: 'stuck', icon: Snowflake, color: '#3b82f6', label: 'Stuck', desc: 'Mental gridlock. Need a shift in perspective.' },
+  { id: 'scattered', icon: Zap, color: '#8b5cf6', label: 'Scattered', desc: 'Fragmented attention. Seeking center.' },
+  { id: 'sad', icon: CloudRain, color: '#64748b', label: 'Low', desc: 'Diminished energy. Gentle rising required.' },
+  { id: 'neutral', icon: Scale, color: '#10b981', label: 'Neutral', desc: 'Balanced baseline. Ready for optimization.' },
+  { id: 'curious', icon: Sparkles, color: '#ec4899', label: 'Curious', desc: 'Open systems. Ready to explore new depths.' },
+  { id: 'restless', icon: Activity, color: '#f43f5e', label: 'Restless', desc: 'Excessive kinetic energy. Redirecting focus.' },
 ];
 
 const INTENTIONS = [
-  { id: 'clarity',        label: 'Mental Clarity',        icon: Sun },
-  { id: 'sleep',          label: 'Deep Sleep',            icon: Moon },
-  { id: 'creativity',     label: 'Creative Breakthrough', icon: Lightbulb },
-  { id: 'healing',        label: 'Emotional Healing',     icon: Heart },
-  { id: 'confidence',     label: 'Inner Strength',        icon: Shield },
-  { id: 'focus',          label: 'Laser Focus',           icon: Target },
-  { id: 'presence',       label: 'Deep Presence',         icon: Eye },
-  { id: 'transformation', label: 'Total Transformation',  icon: RefreshCw },
+  { id: 'clarity', label: 'Mental Clarity', icon: Sun },
+  { id: 'sleep', label: 'Deep Sleep', icon: Moon },
+  { id: 'creativity', label: 'Creative Breakthrough', icon: Lightbulb },
+  { id: 'healing', label: 'Emotional Healing', icon: Heart },
+  { id: 'confidence', label: 'Inner Strength', icon: Shield },
+  { id: 'focus', label: 'Laser Focus', icon: Target },
+  { id: 'presence', label: 'Deep Presence', icon: Eye },
+  { id: 'transformation', label: 'Total Transformation', icon: RefreshCw },
 ];
 
 const DURATIONS = [
@@ -89,24 +90,24 @@ const MOOD_GUIDANCE = {
 
 /* ──── Session Benefits by Mood + Intention ──── */
 const BENEFITS_MAP = {
-  'burnt-out':  ['Activates parasympathetic recovery', 'Reduces muscle tension & blood pressure', 'Restores depleted energy reserves'],
-  'anxious':    ['Calms sympathetic nervous system', 'Reduces anxiety markers by up to 50%', 'Anchors awareness to the present'],
-  'stuck':      ['Unlocks subconscious creativity', 'Breaks repetitive thought patterns', 'Cultivates new mental pathways'],
-  'scattered':  ['Consolidates fragmented attention', 'Enhances focus and memory retention', 'Builds sustained concentration'],
-  'sad':        ['Processes and releases stored emotions', 'Fosters inner resilience and warmth', 'Gently elevates energy levels'],
-  'neutral':    ['Optimizes cognitive performance', 'Deepens self-awareness and insight', 'Plants seeds for transformation'],
-  'curious':    ['Explores deeper consciousness layers', 'Enhances creative problem-solving', 'Expands awareness beyond the ordinary'],
-  'restless':   ['Redirects kinetic energy inward', 'Establishes calm physical stillness', 'Sharpens mental clarity'],
+  'burnt-out': ['Activates parasympathetic recovery', 'Reduces muscle tension & blood pressure', 'Restores depleted energy reserves'],
+  'anxious': ['Calms sympathetic nervous system', 'Reduces anxiety markers by up to 50%', 'Anchors awareness to the present'],
+  'stuck': ['Unlocks subconscious creativity', 'Breaks repetitive thought patterns', 'Cultivates new mental pathways'],
+  'scattered': ['Consolidates fragmented attention', 'Enhances focus and memory retention', 'Builds sustained concentration'],
+  'sad': ['Processes and releases stored emotions', 'Fosters inner resilience and warmth', 'Gently elevates energy levels'],
+  'neutral': ['Optimizes cognitive performance', 'Deepens self-awareness and insight', 'Plants seeds for transformation'],
+  'curious': ['Explores deeper consciousness layers', 'Enhances creative problem-solving', 'Expands awareness beyond the ordinary'],
+  'restless': ['Redirects kinetic energy inward', 'Establishes calm physical stillness', 'Sharpens mental clarity'],
 };
 
 const INTENTION_BENEFITS = {
-  'clarity':        ['Clears mental fog and fatigue', 'Enhances decision-making ability'],
-  'sleep':          ['Improves sleep quality & duration', '20 min ≈ 2-3 hours of deep sleep'],
-  'creativity':     ['Accesses hypnagogic creative state', 'Dissolves creative blocks'],
-  'healing':        ['Supports emotional processing', 'Reduces PTSD and trauma symptoms'],
-  'confidence':     ['Strengthens inner resolve (Sankalpa)', 'Builds embodied self-trust'],
-  'focus':          ['Trains sustained attention networks', 'Reduces default mode wandering'],
-  'presence':       ['Cultivates witness consciousness', 'Deepens body-mind connection'],
+  'clarity': ['Clears mental fog and fatigue', 'Enhances decision-making ability'],
+  'sleep': ['Improves sleep quality & duration', '20 min ≈ 2-3 hours of deep sleep'],
+  'creativity': ['Accesses hypnagogic creative state', 'Dissolves creative blocks'],
+  'healing': ['Supports emotional processing', 'Reduces PTSD and trauma symptoms'],
+  'confidence': ['Strengthens inner resolve (Sankalpa)', 'Builds embodied self-trust'],
+  'focus': ['Trains sustained attention networks', 'Reduces default mode wandering'],
+  'presence': ['Cultivates witness consciousness', 'Deepens body-mind connection'],
   'transformation': ['Rewrites subconscious patterns', 'Facilitates lasting behavioral change'],
 };
 
@@ -133,14 +134,14 @@ function getRecommendation(moodId, intentionId) {
   const intention = INTENTIONS.find((i) => i.id === intentionId);
   if (!mood || !intention) return null;
 
-  const bioIntentions   = ['clarity', 'focus', 'creativity', 'confidence'];
+  const bioIntentions = ['clarity', 'focus', 'creativity', 'confidence'];
   const vedicIntentions = ['healing', 'presence', 'sleep', 'transformation'];
-  const bioMoods        = ['burnt-out', 'scattered', 'restless'];
+  const bioMoods = ['burnt-out', 'scattered', 'restless'];
 
   let score = 0;
-  if (bioIntentions.includes(intentionId))   score += 2;
+  if (bioIntentions.includes(intentionId)) score += 2;
   if (vedicIntentions.includes(intentionId)) score -= 2;
-  if (bioMoods.includes(moodId))             score += 1;
+  if (bioMoods.includes(moodId)) score += 1;
 
   const recommended = score > 0 ? 'biohacker' : 'vedic';
   const prompt = `I'm currently feeling ${mood.label.toLowerCase()} — ${mood.desc.toLowerCase()}. My intention for this session is ${intention.label.toLowerCase()}.`;
@@ -170,7 +171,13 @@ export default function SessionPage() {
   const [sessionData, setSessionData] = useState(null);
   const [saved, setSaved] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [pdfGenerating, setPdfGenerating] = useState(false);
+  const [hasStartedAudio, setHasStartedAudio] = useState(false);
+  const [musicOn, setMusicOn] = useState(true);
+  const [voiceOn, setVoiceOn] = useState(true);
+  const [timeLeft, setTimeLeft] = useState(0);
+  const audioRef = useRef(null);
+  const timerRef = useRef(null);
+  const audioEngineRef = useRef(null);
 
   // Survey state — progressive steps
   const [surveyStep, setSurveyStep] = useState(1); // 1=mood, 2=intention, 3=protocol
@@ -197,7 +204,7 @@ export default function SessionPage() {
     try {
       const data = sessionStorage.getItem('kosha_current_session');
       if (data) setSessionData(JSON.parse(data));
-    } catch {}
+    } catch { }
   }, []);
 
   // Auto-save on first load of session
@@ -239,6 +246,11 @@ export default function SessionPage() {
     setMode(null);
     setDuration(30);
     setError('');
+    setHasStartedAudio(false);
+    setMusicOn(true);
+    setVoiceOn(true);
+    setTimeLeft(0);
+    clearInterval(timerRef.current);
     setSurveyStep(1);
   }
 
@@ -281,6 +293,7 @@ export default function SessionPage() {
       setSessionData(newSession);
       setSaved(false);
       setIsGenerating(false);
+      setHasStartedAudio(false);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       setError(err.message);
@@ -288,32 +301,37 @@ export default function SessionPage() {
     }
   }
 
-  async function handleDownloadPDF() {
-    if (!sessionData) return;
-    setPdfGenerating(true);
-    try {
-      const { jsPDF } = await import('jspdf');
-      const doc = new jsPDF();
-      const ml = sessionData.mode === 'vedic' ? 'The Vedic Sage' : 'The Bio-Hacker';
-      doc.setFontSize(20); doc.setFont(undefined, 'bold');
-      doc.text('Kosha — Neuro-Script', 20, 25);
-      doc.setFontSize(12); doc.setFont(undefined, 'normal'); doc.setTextColor(120, 120, 120);
-      doc.text(`${ml} Path · ${sessionData.duration} min session`, 20, 35);
-      doc.text(`Generated: ${new Date().toLocaleDateString()}`, 20, 42);
-      doc.setDrawColor(200, 200, 200); doc.line(20, 47, 190, 47);
-      doc.setTextColor(80, 80, 80); doc.setFontSize(10);
-      doc.text('Your Intention:', 20, 55); doc.setFont(undefined, 'italic');
-      const il = doc.splitTextToSize(`"${sessionData.prompt}"`, 160);
-      doc.text(il, 20, 62);
-      doc.setFont(undefined, 'normal'); doc.setTextColor(40, 40, 40); doc.setFontSize(11);
-      const bodyY = 62 + il.length * 5 + 10;
-      const sl = doc.splitTextToSize(sessionData.script, 170);
-      let y = bodyY;
-      sl.forEach((line) => { if (y > 280) { doc.addPage(); y = 20; } doc.text(line, 20, y); y += 5.5; });
-      doc.save(`kosha-session-${Date.now()}.pdf`);
-    } catch (err) { console.error('PDF generation error:', err); }
-    finally { setPdfGenerating(false); }
-  }
+  // Timer countdown effect
+  useEffect(() => {
+    if (hasStartedAudio && sessionData) {
+      setTimeLeft(sessionData.duration * 60);
+      timerRef.current = setInterval(() => {
+        setTimeLeft(prev => {
+          if (prev <= 1) {
+            clearInterval(timerRef.current);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(timerRef.current);
+    }
+  }, [hasStartedAudio, sessionData]);
+
+  const toggleMusic = useCallback(() => {
+    if (audioRef.current) {
+      if (musicOn) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+    }
+    setMusicOn(prev => !prev);
+  }, [musicOn]);
+
+  const toggleVoice = useCallback(() => {
+    setVoiceOn(prev => !prev);
+  }, []);
 
   if (!mounted) {
     return <div className="sp-loading"><div className="pulse-loader"><span /><span /><span /></div></div>;
@@ -321,6 +339,19 @@ export default function SessionPage() {
 
   // ──── PLAYER VIEW ────
   if (sessionData) {
+    const handleStartAudio = () => {
+      setHasStartedAudio(true);
+      if (audioRef.current) {
+        audioRef.current.play();
+      }
+    };
+
+    const formatTime = (seconds) => {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    };
+
     const pathLabel = sessionData.mode === 'vedic' ? 'Vedic Sage' : 'Bio-Hacker';
     const sessionTitle = sessionData.mode === 'vedic' ? 'Vedic Stillness' : 'Digital Detox Nidra';
     const sessionQuote = sessionData.mode === 'vedic' ? 'Deep Resonance Healing' : 'Deep Theta Synchronization';
@@ -344,35 +375,90 @@ export default function SessionPage() {
           {/* Player Section */}
           <div className="sp-player-card">
             <span className="sp-path-chip">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
               {pathLabel} · {sessionData.duration} min
             </span>
 
-            <div className="sp-timer-ring">
-              <div className="sp-timer-inner">
-                <span className="sp-timer-time">{sessionData.duration}:00</span>
-              </div>
+            {/* Countdown Timer */}
+            <div className="sp-countdown">
+              <span className="sp-countdown-time">
+                {hasStartedAudio ? formatTime(timeLeft) : `${sessionData.duration}:00`}
+              </span>
+            </div>
+
+            {/* Pulsing Avatar */}
+            <div className={`sp-avatar-container ${hasStartedAudio ? 'sp-avatar-pulse' : ''}`}>
+              <div className="sp-avatar-glow" />
+              <img
+                src="/avatar/pose2.png"
+                alt="Meditation pose"
+                className="sp-avatar-img"
+              />
             </div>
 
             <h2 className="sp-session-title">{sessionTitle}</h2>
             <p className="sp-session-quote">{sessionQuote}</p>
 
-            <div className="sp-audio-wrapper">
-              <audio 
-                controls 
-                autoPlay 
-                src={`/music/${sessionData.duration}mins.mp3`}
-                className="sp-native-audio"
-              />
-            </div>
+            {/* Hidden audio element for music */}
+            <audio
+              ref={audioRef}
+              loop
+              src={`/music/${sessionData.duration}mins.mp3`}
+              style={{ display: 'none' }}
+            />
+
+            {!hasStartedAudio ? (
+              <button
+                className="sp-generate-btn"
+                onClick={handleStartAudio}
+                style={{ maxWidth: '300px', margin: 'var(--space-xl) auto' }}
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+                Start Session
+              </button>
+            ) : (
+              <div className="sp-toggles-row">
+                {/* Music Toggle */}
+                <button
+                  className={`sp-toggle-btn ${musicOn ? 'active' : ''}`}
+                  onClick={toggleMusic}
+                  id="toggle-music-btn"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M9 18V5l12-2v13" />
+                    <circle cx="6" cy="18" r="3" />
+                    <circle cx="18" cy="16" r="3" />
+                  </svg>
+                  <span className="sp-toggle-label">Music</span>
+                  <span className={`sp-toggle-indicator ${musicOn ? 'on' : 'off'}`}>{musicOn ? 'ON' : 'OFF'}</span>
+                </button>
+
+                {/* Voice Toggle */}
+                <button
+                  className={`sp-toggle-btn ${voiceOn ? 'active' : ''}`}
+                  onClick={toggleVoice}
+                  id="toggle-voice-btn"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                    <line x1="12" y1="19" x2="12" y2="23" />
+                    <line x1="8" y1="23" x2="16" y2="23" />
+                  </svg>
+                  <span className="sp-toggle-label">Voice</span>
+                  <span className={`sp-toggle-indicator ${voiceOn ? 'on' : 'off'}`}>{voiceOn ? 'ON' : 'OFF'}</span>
+                </button>
+              </div>
+            )}
+
+            {/* AudioEngine — Deepgram TTS, plays sequentially */}
+            {hasStartedAudio && voiceOn && (
+              <AudioEngine script={sessionData.script} onEnd={() => { }} autoPlay={true} />
+            )}
 
             <div className="sp-player-actions">
-              <button className="sp-action-pill" onClick={handleDownloadPDF} disabled={pdfGenerating}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/></svg>
-                {pdfGenerating ? 'Exporting…' : 'Export PDF'}
-              </button>
               <button className="sp-action-pill" onClick={handleNewSession}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
                 New Session
               </button>
             </div>
@@ -430,20 +516,107 @@ export default function SessionPage() {
 
           /* Player Card */
           .sp-player-card { text-align: center; padding: var(--space-2xl) var(--space-xl); background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); margin-bottom: var(--space-xl); }
-          .sp-path-chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px; border-radius: var(--radius-full); background: var(--bg-glass); border: 1px solid var(--border); font-size: 0.6875rem; font-weight: 700; color: var(--gold); letter-spacing: 0.04em; margin-bottom: var(--space-2xl); }
+          .sp-path-chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px; border-radius: var(--radius-full); background: var(--bg-glass); border: 1px solid var(--border); font-size: 0.6875rem; font-weight: 700; color: var(--gold); letter-spacing: 0.04em; margin-bottom: var(--space-xl); }
 
-          /* Timer Ring */
-          .sp-timer-ring { width: 220px; height: 220px; margin: 0 auto var(--space-xl); border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; position: relative; }
-          .sp-timer-ring::before { content: ''; position: absolute; inset: -10px; border-radius: 50%; border: 1px solid rgba(123,167,194,0.1); }
-          .sp-timer-inner { width: 180px; height: 180px; border-radius: 50%; background: radial-gradient(circle, rgba(123,167,194,0.06) 0%, transparent 70%); display: flex; flex-direction: column; align-items: center; justify-content: center; }
-          .sp-timer-time { font-family: var(--font-heading); font-size: 2.75rem; font-weight: 300; color: var(--text-1); letter-spacing: -0.02em; }
+          /* Countdown Timer */
+          .sp-countdown { margin-bottom: var(--space-lg); }
+          .sp-countdown-time { font-family: var(--font-heading); font-size: 3rem; font-weight: 300; color: var(--text-1); letter-spacing: 0.04em; }
+
+          /* Avatar */
+          .sp-avatar-container {
+            position: relative;
+            width: 240px; height: 240px;
+            margin: 0 auto var(--space-xl);
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%;
+          }
+          .sp-avatar-ring {
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 2px solid rgba(184,132,92,0.2);
+            pointer-events: none;
+          }
+          .sp-avatar-glow {
+            position: absolute;
+            inset: -30px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(184,132,92,0.15) 0%, rgba(107,143,113,0.08) 40%, transparent 70%);
+            pointer-events: none;
+          }
+          .sp-avatar-img {
+            position: relative;
+            z-index: 1;
+            width: 200px; height: 200px;
+            object-fit: contain;
+            filter: drop-shadow(0 8px 32px rgba(0,0,0,0.18));
+            border-radius: 50%;
+          }
+
+          /* Heartbeat pulse animation */
+          .sp-avatar-pulse .sp-avatar-img {
+            animation: heartbeat 2.4s ease-in-out infinite;
+          }
+          .sp-avatar-pulse .sp-avatar-glow {
+            animation: glowPulse 2.4s ease-in-out infinite;
+          }
+        
+
+          @keyframes heartbeat {
+            0%   { transform: scale(1); }
+            14%  { transform: scale(1.08); }
+            28%  { transform: scale(1); }
+            42%  { transform: scale(1.05); }
+            56%  { transform: scale(1); }
+            100% { transform: scale(1); }
+          }
+
+          @keyframes glowPulse {
+            0%   { opacity: 0.5; transform: scale(1); }
+            14%  { opacity: 1; transform: scale(1.12); }
+            28%  { opacity: 0.5; transform: scale(1); }
+            42%  { opacity: 0.8; transform: scale(1.08); }
+            56%  { opacity: 0.5; transform: scale(1); }
+            100% { opacity: 0.5; transform: scale(1); }
+          }
+
+          @keyframes ringPulse {
+            0%   { border-color: rgba(184,132,92,0.2); transform: scale(1); }
+            14%  { border-color: rgba(184,132,92,0.5); transform: scale(1.06); }
+            28%  { border-color: rgba(184,132,92,0.2); transform: scale(1); }
+            42%  { border-color: rgba(184,132,92,0.4); transform: scale(1.04); }
+            56%  { border-color: rgba(184,132,92,0.2); transform: scale(1); }
+            100% { border-color: rgba(184,132,92,0.2); transform: scale(1); }
+          }
 
           .sp-session-title { font-size: 1.375rem; font-weight: 700; color: var(--text-1); margin-bottom: 4px; }
           .sp-session-quote { font-size: 0.875rem; color: var(--text-2); margin-bottom: var(--space-xl); }
 
-          .sp-audio-wrapper { display: flex; justify-content: center; margin-bottom: var(--space-xl); }
-          .sp-native-audio { width: 100%; max-width: 400px; height: 48px; border-radius: var(--radius-full); outline: none; }
-          .sp-native-audio::-webkit-media-controls-panel { background: var(--bg-raised); }
+          /* Toggle Buttons Row */
+          .sp-toggles-row { display: flex; gap: var(--space-md); justify-content: center; margin-bottom: var(--space-xl); }
+          .sp-toggle-btn {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 22px; border-radius: var(--radius-full);
+            background: var(--bg-raised); border: 1px solid var(--border);
+            font-size: 0.875rem; font-weight: 600; color: var(--text-3);
+            cursor: pointer; transition: all 300ms ease;
+          }
+          .sp-toggle-btn.active {
+            background: rgba(107,143,113,0.1); border-color: var(--steel);
+            color: var(--text-1);
+          }
+          .sp-toggle-btn.active svg { color: var(--steel); }
+          .sp-toggle-label { font-size: 0.875rem; }
+          .sp-toggle-indicator {
+            font-size: 0.625rem; font-weight: 800; letter-spacing: 0.06em;
+            padding: 2px 8px; border-radius: var(--radius-full);
+          }
+          .sp-toggle-indicator.on {
+            background: rgba(107,143,113,0.15); color: var(--steel);
+          }
+          .sp-toggle-indicator.off {
+            background: var(--bg-surface); color: var(--text-3);
+          }
 
           .sp-player-actions { display: flex; gap: var(--space-md); justify-content: center; margin-top: var(--space-sm); }
           .sp-action-pill { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: var(--radius-full); background: var(--bg-glass); border: 1px solid var(--border); font-size: 0.8125rem; font-weight: 600; color: var(--text-2); cursor: pointer; }
@@ -471,11 +644,13 @@ export default function SessionPage() {
           .sp-benefit-check { color: var(--gold); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
 
           @media (max-width: 768px) {
-            .sp-timer-ring { width: 180px; height: 180px; }
-            .sp-timer-inner { width: 150px; height: 150px; }
-            .sp-timer-time { font-size: 2.25rem; }
+            .sp-avatar-container { width: 200px; height: 200px; }
+            .sp-avatar-img { width: 170px; height: 170px; }
+            .sp-countdown-time { font-size: 2.5rem; }
             .sp-player-actions { flex-direction: column; align-items: stretch; }
             .sp-action-pill { justify-content: center; }
+            .sp-toggles-row { flex-direction: column; align-items: stretch; }
+            .sp-toggle-btn { justify-content: center; }
           }
         `}</style>
       </div>
@@ -499,7 +674,7 @@ export default function SessionPage() {
         {/* Back Button */}
         {surveyStep > 1 && (
           <button className="sp-back" onClick={handleBack}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5" /><polyline points="12 19 5 12 12 5" /></svg>
             Back
           </button>
         )}
@@ -657,7 +832,7 @@ export default function SessionPage() {
             <div className="sp-mode-section">
               <span className="sp-dur-label">Select methodology</span>
               <div className="sp-mode-grid">
-                <ModeCard mode="vedic"     selected={effectiveMode === 'vedic'}     onSelect={(m) => setMode(m)} recommended={rec?.recommended === 'vedic'} />
+                <ModeCard mode="vedic" selected={effectiveMode === 'vedic'} onSelect={(m) => setMode(m)} recommended={rec?.recommended === 'vedic'} />
                 <ModeCard mode="biohacker" selected={effectiveMode === 'biohacker'} onSelect={(m) => setMode(m)} recommended={rec?.recommended === 'biohacker'} />
               </div>
             </div>
@@ -691,7 +866,7 @@ export default function SessionPage() {
                 <><div className="pulse-loader"><span /><span /><span /></div>Generating…</>
               ) : (
                 <>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3" /></svg>
                   Begin Practice
                 </>
               )}
@@ -800,9 +975,9 @@ export default function SessionPage() {
         .sp-generate-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
 
         @media (max-width: 640px) {
-          .sp-step-title { font-size: 1.75rem; }
-          .sp-mood-grid { gap: var(--space-sm); }
-          .sp-intention-grid { gap: var(--space-sm); }
+          .sp-step-title { font-size: 1.5rem; }
+          .sp-mood-grid { grid-template-columns: 1fr; gap: var(--space-sm); }
+          .sp-intention-grid { grid-template-columns: 1fr; gap: var(--space-sm); }
           .sp-mode-grid { grid-template-columns: 1fr; }
           .sp-phases-grid { grid-template-columns: 1fr; }
           .sp-guidance-card { padding: var(--space-md); }
