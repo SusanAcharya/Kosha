@@ -8,39 +8,44 @@
 
 /* ---- Custom Properties ---- */
 :root {
-  /* Background layers — warm parchment tones */
-  --bg-void: #F6F3ED;
-  --bg-base: #F0ECE4;
-  --bg-raised: #EAE5DB;
-  --bg-surface: #E3DDD1;
+  /* Background layers — clean neutral tones */
+  --bg-void: #F4F4F4;
+  --bg-base: #EEEEEE;
+  --bg-raised: #E8E8E8;
+  --bg-surface: #E0E0E0;
   --bg-card: rgba(255, 255, 255, 0.65);
   --bg-glass: rgba(255, 255, 255, 0.45);
   --bg-glass-hover: rgba(255, 255, 255, 0.6);
   --bg-glass-active: rgba(255, 255, 255, 0.75);
 
-  /* Primary: sage green — calm, natural */
-  --steel: #6B8F71;
-  --steel-light: #8AAF8F;
-  --steel-dim: #527358;
-  --steel-glow: rgba(107, 143, 113, 0.18);
-  --steel-glow-strong: rgba(107, 143, 113, 0.3);
+  /* Primary: green */
+  --steel: #58814C;
+  --steel-light: #7A9D6F;
+  --steel-dim: #426139;
+  --steel-glow: rgba(88, 129, 76, 0.18);
+  --steel-glow-strong: rgba(88, 129, 76, 0.3);
 
-  /* Accent: warm terracotta/clay */
-  --gold: #B8845C;
-  --gold-light: #D4A27A;
-  --gold-dim: #9A6D48;
-  --gold-glow: rgba(184, 132, 92, 0.15);
-  --gold-glow-strong: rgba(184, 132, 92, 0.3);
+  /* Accent (Secondary): slate grey */
+  --gold: #5C5763;
+  --gold-light: #75707C;
+  --gold-dim: #45414A;
+  --gold-glow: rgba(92, 87, 99, 0.15);
+  --gold-glow-strong: rgba(92, 87, 99, 0.3);
 
-  /* Vedic path — warm amber earth */
-  --vedic: #B8845C;
-  --vedic-glow: rgba(184, 132, 92, 0.15);
-  --vedic-bg: rgba(184, 132, 92, 0.07);
+  /* Tertiary: light blue */
+  --tertiary: #8ED1FC;
+  --tertiary-dim: #5A99BD;
+  --tertiary-glow: rgba(142, 209, 252, 0.15);
 
-  /* Bio-Hacker path — sage green */
-  --bio: #6B8F71;
-  --bio-glow: rgba(107, 143, 113, 0.15);
-  --bio-bg: rgba(107, 143, 113, 0.07);
+  /* Vedic path */
+  --vedic: var(--gold);
+  --vedic-glow: var(--gold-glow);
+  --vedic-bg: rgba(92, 87, 99, 0.07);
+
+  /* Bio-Hacker path */
+  --bio: var(--steel);
+  --bio-glow: var(--steel-glow);
+  --bio-bg: rgba(88, 129, 76, 0.07);
 
   /* Compatibility aliases */
   --color-bg-deep: var(--bg-void);
@@ -64,20 +69,20 @@
   --color-bio-glow: var(--bio-glow);
   --color-bio-bg: var(--bio-bg);
 
-  /* Text — warm grounding tones */
-  --text-1: #2C2A25;
-  --text-2: rgba(44, 42, 37, 0.6);
-  --text-3: rgba(44, 42, 37, 0.38);
+  /* Text — neutral dark */
+  --text-1: #292929;
+  --text-2: rgba(41, 41, 41, 0.6);
+  --text-3: rgba(41, 41, 41, 0.38);
   --text-inv: #FAFAF7;
   --color-text-primary: var(--text-1);
   --color-text-secondary: var(--text-2);
   --color-text-muted: var(--text-3);
   --color-text-inverse: var(--text-inv);
 
-  /* Borders — soft warm dividers */
-  --border: rgba(44, 42, 37, 0.08);
-  --border-hover: rgba(107, 143, 113, 0.3);
-  --border-active: rgba(107, 143, 113, 0.5);
+  /* Borders — neutral dividers */
+  --border: rgba(41, 41, 41, 0.08);
+  --border-hover: var(--steel-glow-strong);
+  --border-active: var(--steel-dim);
   --color-border: var(--border);
   --color-border-active: var(--border-active);
 
@@ -259,6 +264,38 @@ input, textarea, select { font-family: var(--font-body); color: var(--text-1); b
 
 
 
+.btn-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  background: linear-gradient(135deg, var(--steel), var(--steel-dim));
+  color: white !important;
+  box-shadow: 0 4px 24px var(--steel-glow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 32px var(--steel-glow-strong); }
+
+.btn-ghost-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 24px;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--text-2);
+  border: 1px solid var(--border);
+  transition: all 0.2s ease;
+}
+
+.btn-ghost-cta:hover { background: var(--bg-glass-hover); color: var(--text-1); border-color: var(--text-3); }
+
 .btn-sm { padding: var(--space-sm) var(--space-md); font-size: 0.875rem; }
 .btn-lg { padding: var(--space-md) var(--space-2xl); font-size: 1.125rem; }
 
@@ -391,9 +428,11 @@ input, textarea, select { font-family: var(--font-body); color: var(--text-1); b
 
 /* ---- Responsive ---- */
 @media (max-width: 768px) {
+  body { overflow-x: hidden; }
   .container { padding: 0 var(--space-md); }
-  h1 { font-size: 2rem !important; }
-  h2 { font-size: 1.5rem !important; }
+  h1, h2, h3 { word-break: break-word; hyphens: auto; }
+  h1 { font-size: 2rem !important; line-height: 1.15; }
+  h2 { font-size: 1.5rem !important; line-height: 1.25; }
   .breathing-bg::before { width: 300px; height: 300px; }
   .breathing-bg::after  { width: 250px; height: 250px; }
   .breathing-orb-center  { width: 200px; height: 200px; }

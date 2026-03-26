@@ -215,8 +215,6 @@ export default function BlogBiologicalHackPage() {
         .blog-cta-card h3 { font-size: 1.25rem; font-weight: 800; margin-bottom: var(--space-sm); color: var(--text-1); }
         .blog-cta-card p { font-size: 0.9375rem; color: var(--text-2); margin-bottom: var(--space-lg); line-height: 1.6; }
 
-        .btn-cta { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: var(--radius-full); font-weight: 700; font-size: 0.9375rem; background: linear-gradient(135deg, var(--steel), var(--steel-dim)); color: white; box-shadow: 0 4px 24px var(--steel-glow); }
-
         @media (max-width: 768px) {
           .blog-title { font-size: 1.75rem; }
           .blog-body h2 { font-size: 1.25rem; }

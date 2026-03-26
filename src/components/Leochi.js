@@ -429,15 +429,15 @@ export default function Leochi() {
           cursor: pointer;
         }
         .leo-btn-cta {
-          background: linear-gradient(135deg, var(--gold), #b8860b);
+          background: linear-gradient(135deg, var(--gold), var(--gold-dim));
           padding: 8px 20px;
         }
 
         /* ──── MOBILE ──── */
         @media (max-width: 640px) {
-          .leo-fab { bottom: 12px; right: 12px; }
-          .leo-avatar-btn { width: 110px; height: 110px; }
-          .leo-bubble { font-size: 0.8125rem; padding: 8px 14px; }
+          .leo-fab { bottom: -10px; right: 0; z-index: 90; }
+          .leo-avatar-btn { width: 130px; height: 130px; }
+          .leo-bubble { font-size: 0.8125rem; padding: 8px 14px; right: 12px; bottom: 20px; }
 
           .leo-tooltip-fixed {
             width: calc(100vw - 32px);

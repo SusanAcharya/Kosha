@@ -485,11 +485,6 @@ export default function HomePage() {
         .hb-icon { color: var(--steel); font-size: 0.625rem; }
         .hero-cta { display: flex; align-items: center; justify-content: flex-start; gap: var(--space-md); }
 
-        .btn-cta { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: var(--radius-full); font-weight: 700; font-size: 0.9375rem; background: linear-gradient(135deg, var(--steel), var(--steel-dim)); color: white; box-shadow: 0 4px 24px var(--steel-glow); transition: transform 0.2s ease, box-shadow 0.2s ease; }
-        .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 32px var(--steel-glow-strong); }
-        .btn-ghost-cta { padding: 14px 24px; border-radius: var(--radius-full); font-weight: 600; font-size: 0.9375rem; color: var(--text-2); border: 1px solid var(--border); transition: all 0.2s ease; }
-        .btn-ghost-cta:hover { background: var(--bg-glass-hover); color: var(--text-1); border-color: var(--text-3); }
-
         /* ── Sections ── */
         .info-section { padding: var(--space-3xl) 0; border-top: 1px solid var(--border); }
         .section-tag { display: block; font-size: 0.625rem; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: var(--space-sm); }
@@ -715,13 +710,14 @@ export default function HomePage() {
         /* ── Responsive ── */
         @media (max-width: 768px) {
           .hero { padding: var(--space-2xl) 0; text-align: center; }
-          .hero-container { grid-template-columns: 1fr; gap: var(--space-xl); text-align: center; }
+          .hero-container { grid-template-columns: 1fr; gap: var(--space-xl); text-align: center; justify-items: center; width: 100%; overflow: hidden; }
+          .hero-text-col { align-items: center; width: 100%; max-width: 100vw; }
           .hero-h1 { font-size: 2.25rem; }
-          .hero-sub { margin-left: auto; margin-right: auto; }
-          .hero-badges { justify-content: center; }
-          .hero-cta { flex-direction: column; align-items: stretch; justify-content: center; }
-          .hero-image-col { justify-content: center; margin-top: var(--space-lg); }
-          .hero-avatar { max-width: 320px; }
+          .hero-sub { margin-left: auto; margin-right: auto; max-width: 100%; padding: 0 var(--space-md); }
+          .hero-badges { justify-content: center; flex-wrap: wrap; width: 100%; padding: 0 var(--space-sm); }
+          .hero-badge { font-size: 0.625rem; padding: 6px 12px; }
+          .hero-cta { flex-direction: column; align-items: center; justify-content: center; gap: var(--space-md); width: 100%; }
+          .hero-image-col { display: none; }
 
           .philo-hub-card { 
             flex-direction: column; align-items: stretch; gap: 0;

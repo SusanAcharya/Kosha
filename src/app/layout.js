@@ -28,7 +28,7 @@ export default function RootLayout({ children }) {
           <div className="breathing-orb-center" />
         </div>
         <Navigation />
-        <main style={{ paddingTop: '64px', minHeight: '100vh' }}>
+        <main style={{ paddingTop: '56px', minHeight: '100vh', paddingBottom: '120px' }}>
           {children}
         </main>
         <Leochi />
