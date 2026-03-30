@@ -56,18 +56,18 @@ export default function AudioEngine({ script, onEnd, autoPlay }) {
 
     function flushText() {
       if (!currentText.trim()) return;
-      
+
       // Split into sentences to allow explicit longer pauses between them.
       // Match sentence-ending punctuation followed by a space and a capital letter or quote.
       const sentences = currentText.trim().replace(/([.?!])\s+(?=[A-Z"'])/g, "$1|SPLIT|").split("|SPLIT|");
-      
+
       for (let i = 0; i < sentences.length; i++) {
         const sentence = sentences[i].trim();
         if (sentence) {
           blocks.push({ type: 'text', content: sentence });
           // Add a longer explicitly controlled pause after each sentence
           if (i < sentences.length - 1) {
-            blocks.push({ type: 'pause', durationMS: 2000 }); 
+            blocks.push({ type: 'pause', durationMS: 4500 });
           }
         }
       }
@@ -109,7 +109,7 @@ export default function AudioEngine({ script, onEnd, autoPlay }) {
       if (trimmed === '') {
         if (currentText.trim()) {
           flushText();
-          blocks.push({ type: 'pause', durationMS: 3500 });
+          blocks.push({ type: 'pause', durationMS: 6000 });
         }
         continue;
       }
@@ -148,6 +148,8 @@ export default function AudioEngine({ script, onEnd, autoPlay }) {
       }
       const audio = audioRef.current;
       audio.src = url;
+      audio.defaultPlaybackRate = 0.75;
+      audio.playbackRate = 0.75; // Slow down TTS by 25%
       audio.onended = () => {
         URL.revokeObjectURL(url);
         resolve();

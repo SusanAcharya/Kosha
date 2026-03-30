@@ -19,7 +19,7 @@ export async function POST(request) {
     }
 
     const dgResponse = await fetch(
-      'https://api.deepgram.com/v1/speak?model=aura-2-mars-en&encoding=mp3',
+      'https://api.deepgram.com/v1/speak?model=aura-asteria-en&encoding=mp3',
       {
         method: 'POST',
         headers: {

@@ -209,7 +209,7 @@ export default function Leochi() {
       {tutorialActive && step && (
         <div className="leo-tooltip-fixed">
           <div className="leo-tooltip-avatar">
-            <img src="/avatar/pose1.png" alt="Leochi" />
+            <img src="/avatar/leochi_meditating_2.png" alt="Leochi" />
           </div>
           <div className="leo-tooltip-content">
             <div className="leo-tooltip-top">
@@ -247,8 +247,8 @@ export default function Leochi() {
         )}
 
         <button className="leo-avatar-btn" onClick={startTutorial} aria-label="Start tutorial with Leochi">
-          <img src="/avatar/pose2.png" alt="Leochi — meditating" className="leo-img leo-img-default" />
-          <img src="/avatar/pose1.png" alt="Leochi — ready" className="leo-img leo-img-hover" />
+          <img src="/avatar/leochi_meditating_2.png" alt="Leochi — meditating" className="leo-img leo-img-default" />
+          <img src="/avatar/leochi_1.png" alt="Leochi — ready" className="leo-img leo-img-hover" />
         </button>
       </div>
 

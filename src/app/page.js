@@ -64,7 +64,7 @@ export default function HomePage() {
           </div>
           <div className="hero-image-col">
             <div className="hero-orb"></div>
-            <Image src="/avatar/pose5.png" alt="Meditating avatar" width={500} height={500} className="hero-avatar" priority />
+            <Image src="/avatar/leochi_singingbowl.png" alt="Meditating avatar" width={500} height={500} className="hero-avatar" priority />
           </div>
         </div>
       </section>
@@ -198,7 +198,7 @@ export default function HomePage() {
                 </div>
                 <div className="phc-right">
                   <div className="phc-orb"></div>
-                  <Image src="/avatar/pose4.png" alt="Meditating avatar" width={320} height={320} className="phc-avatar" priority />
+                  <Image src="/avatar/yog_nidra.png" alt="Meditating avatar" width={320} height={320} className="phc-avatar" priority />
                 </div>
               </div>
             </Link>
@@ -434,6 +434,52 @@ export default function HomePage() {
                 <span className="blog-card-date">Mar 26, 2025 · 7 min read</span>
                 <h3 className="blog-card-title">The Biological Hack for Your Attention: Using NSDR to Reclaim Your Agency</h3>
                 <p className="blog-card-excerpt">Algorithms are designed to steal your focus. Here&apos;s how NSDR gives it back — using your own biology.</p>
+                <span className="blog-card-link">
+                  Read Article
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </span>
+              </div>
+            </Link>
+
+            <Link href="/blog/5-koshas-science" className="blog-card" id="blog-card-3">
+              <div className="blog-card-img-wrap">
+                <img src="/blog/5-koshas-science.png" alt="The 5 Koshas" className="blog-card-img" />
+                <span className="blog-card-tag">Philosophy &amp; Science</span>
+              </div>
+              <div className="blog-card-body">
+                <span className="blog-card-date">Mar 27, 2026 · 8 min read</span>
+                <h3 className="blog-card-title">The Five Koshas and Western Science: Bridging Ancient Sheaths and Modern Neuroscience</h3>
+                <p className="blog-card-excerpt">How the metaphorical sheaths of yoga align perfectly with literal systems identified by Western medicine.</p>
+                <span className="blog-card-link">
+                  Read Article
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </span>
+              </div>
+            </Link>
+            <Link href="/blog/rewiring-habits-trauma" className="blog-card" id="blog-card-4">
+              <div className="blog-card-img-wrap">
+                <img src="/blog/rewiring-habits-trauma.png" alt="Rewiring Neural Pathways" className="blog-card-img" />
+                <span className="blog-card-tag">Neuroscience &amp; Philosophy</span>
+              </div>
+              <div className="blog-card-body">
+                <span className="blog-card-date">Mar 28, 2026 · 10 min read</span>
+                <h3 className="blog-card-title">Rewiring Habits and Trauma through Neuroscience and Ancient Wisdom</h3>
+                <p className="blog-card-excerpt">How the intersection of biological mechanics, historical narrative, and yoga philosophy offers a path to lasting change.</p>
+                <span className="blog-card-link">
+                  Read Article
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </span>
+              </div>
+            </Link>
+            <Link href="/blog/altruistic-manifestation" className="blog-card" id="blog-card-5">
+              <div className="blog-card-img-wrap">
+                <img src="/blog/altruistic-manifestation.png" alt="Altruistic Manifestation" className="blog-card-img" />
+                <span className="blog-card-tag">Vision &amp; Neuroscience</span>
+              </div>
+              <div className="blog-card-body">
+                <span className="blog-card-date">Mar 29, 2026 · 6 min read</span>
+                <h3 className="blog-card-title">Altruistic Manifestation: Accelerating Your Vision with Neuroscience</h3>
+                <p className="blog-card-excerpt">Why shifting from personal needs to an altruistic mission acts as a neurological jet engine for your goals.</p>
                 <span className="blog-card-link">
                   Read Article
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -739,8 +785,11 @@ export default function HomePage() {
           .callout-card { flex-direction: column; gap: var(--space-sm); }
           .footer-inner { flex-direction: column; gap: var(--space-md); text-align: center; }
           .footer-left { flex-direction: column; gap: var(--space-xs); }
-          .blog-grid { grid-template-columns: 1fr; }
+          .blog-grid { grid-template-columns: 1fr 1fr; }
           .blog-card-img-wrap { height: 160px; }
+        }
+        @media (max-width: 480px) {
+          .blog-grid { grid-template-columns: 1fr; }
         }
       `}</style>
     </div>

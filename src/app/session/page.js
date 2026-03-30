@@ -172,6 +172,8 @@ export default function SessionPage() {
   const [saved, setSaved] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [hasStartedAudio, setHasStartedAudio] = useState(false);
+  const [isCountingDown, setIsCountingDown] = useState(false);
+  const [countdownNumber, setCountdownNumber] = useState(3);
   const [musicOn, setMusicOn] = useState(true);
   const [voiceOn, setVoiceOn] = useState(true);
   const [timeLeft, setTimeLeft] = useState(0);
@@ -247,6 +249,8 @@ export default function SessionPage() {
     setDuration(30);
     setError('');
     setHasStartedAudio(false);
+    setIsCountingDown(false);
+    setCountdownNumber(3);
     setMusicOn(true);
     setVoiceOn(true);
     setTimeLeft(0);
@@ -294,12 +298,33 @@ export default function SessionPage() {
       setSaved(false);
       setIsGenerating(false);
       setHasStartedAudio(false);
+      setIsCountingDown(false);
+      setCountdownNumber(3);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       setError(err.message);
       setIsGenerating(false);
     }
   }
+
+  const handleStartAudio = useCallback(() => {
+    setHasStartedAudio(true);
+    if (audioRef.current) {
+      audioRef.current.play().catch(e => console.error(e));
+    }
+  }, []);
+
+  // Pre-session countdown effect
+  useEffect(() => {
+    if (!isCountingDown) return;
+    if (countdownNumber > 0) {
+      const t = setTimeout(() => setCountdownNumber(prev => prev - 1), 1000);
+      return () => clearTimeout(t);
+    } else {
+      setIsCountingDown(false);
+      handleStartAudio();
+    }
+  }, [isCountingDown, countdownNumber, handleStartAudio]);
 
   // Timer countdown effect
   useEffect(() => {
@@ -339,13 +364,6 @@ export default function SessionPage() {
 
   // ──── PLAYER VIEW ────
   if (sessionData) {
-    const handleStartAudio = () => {
-      setHasStartedAudio(true);
-      if (audioRef.current) {
-        audioRef.current.play();
-      }
-    };
-
     const formatTime = (seconds) => {
       const m = Math.floor(seconds / 60);
       const s = seconds % 60;
@@ -368,6 +386,11 @@ export default function SessionPage() {
         else { if (!stages.length) stages.push({ heading: null, lines: [] }); stages[0].lines.push(line); }
       }
     });
+
+    const handlePreStart = () => {
+      setIsCountingDown(true);
+      setCountdownNumber(3);
+    };
 
     return (
       <div className="sp-page">
@@ -408,14 +431,25 @@ export default function SessionPage() {
             />
 
             {!hasStartedAudio ? (
-              <button
-                className="sp-generate-btn"
-                onClick={handleStartAudio}
-                style={{ maxWidth: '300px', margin: 'var(--space-xl) auto' }}
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3" /></svg>
-                Start Session
-              </button>
+              isCountingDown ? (
+                <div className="sp-pre-countdown" style={{ margin: 'var(--space-xl) auto', textAlign: 'center' }}>
+                  <div className="sp-pre-countdown-number" style={{ fontSize: '3rem', fontWeight: '300', color: 'var(--text-1)' }}>
+                    {countdownNumber}
+                  </div>
+                  <div className="sp-pre-countdown-text" style={{ fontSize: '1rem', color: 'var(--text-2)' }}>
+                    Preparing space...
+                  </div>
+                </div>
+              ) : (
+                <button
+                  className="sp-generate-btn"
+                  onClick={handlePreStart}
+                  style={{ maxWidth: '300px', margin: 'var(--space-xl) auto' }}
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+                  Start Session
+                </button>
+              )
             ) : (
               <div className="sp-toggles-row">
                 {/* Music Toggle */}
@@ -461,28 +495,6 @@ export default function SessionPage() {
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
                 New Session
               </button>
-            </div>
-          </div>
-
-          {/* Script Section */}
-          <div className="sp-script-card">
-            <div className="sp-script-header">
-              <h3>Session Script</h3>
-              <span className="sp-live-tag">LIVE SYNC</span>
-            </div>
-            <div className="sp-script-body">
-              {stages.map((stage, si) => (
-                <div key={si} className="sp-script-stage">
-                  {stage.heading && (
-                    <div className="sp-stage-label">
-                      <span className="sp-stage-time">{String(Math.floor((si * (sessionData.duration || 20)) / stages.length)).padStart(2, '0')}:00</span>
-                      <span className="sp-stage-sep">—</span>
-                      <span className="sp-stage-name">{stage.heading.replace(/[\[\]]/g, '').toUpperCase()}</span>
-                    </div>
-                  )}
-                  {stage.lines.map((line, li) => <p key={li} className="sp-script-line">{line}</p>)}
-                </div>
-              ))}
             </div>
           </div>
 
