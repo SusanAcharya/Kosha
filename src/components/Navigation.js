@@ -16,8 +16,8 @@ export default function Navigation() {
   return (
     <nav className="nav-bar">
       <div className="nav-inner container">
-        <Link href="/" className="nav-logo" id="nav-logo">
-          <span className="nav-logo-text">Kosha</span>
+        <Link href="https://omorenda.space" target="_blank" rel="noopener noreferrer" className="nav-logo" id="nav-logo">
+          <img src="/icons/logo.png" alt="Kosha" className="brand-img" />
         </Link>
 
         <div className={`nav-links ${isOpen ? 'nav-links-open' : ''}`}>
@@ -106,6 +106,13 @@ export default function Navigation() {
           transition: opacity var(--transition-base);
         }
 
+        .brand-img {
+          height: 120px;
+          width: 200px;
+          object-fit: contain;
+          margin: -10px -5px -10px -20px;
+        }
+
 
 
         .nav-logo-text {
@@ -186,6 +193,12 @@ export default function Navigation() {
         @media (max-width: 768px) {
           .nav-inner { height: 48px; position: relative; }
           .nav-hamburger { display: flex; align-items: center; justify-content: center; }
+
+          .brand-img {
+            height: 90px;
+            width: 150px;
+            margin: -5px -5px -5px -15px;
+          }
           
           .nav-links {
             position: fixed;
