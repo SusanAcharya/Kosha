@@ -1,6 +1,8 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import Navigation from "@/components/Navigation";
 import Leochi from "@/components/Leochi";
+import PWARegister from "@/components/PWARegister";
+import InstallPrompt from "@/components/InstallPrompt";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,11 +15,30 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport = {
+  themeColor: "#0d0e15",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export const metadata = {
   title: "Kosha — The OS for Consciousness",
   description:
     "Generative AI-powered personalized Yoga Nidra experiences. Choose between the Vedic Sage path or the Bio-Hacker path for deep mind programming.",
   keywords: "yoga nidra, meditation, AI, consciousness, binaural beats, sankalpa",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Kosha",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  icons: {
+    icon: "/icons/icon-512x512.png",
+    apple: "/icons/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({ children }) {
@@ -31,7 +52,9 @@ export default function RootLayout({ children }) {
         <main style={{ paddingTop: '56px', minHeight: '100vh', paddingBottom: '120px' }}>
           {children}
         </main>
+        <InstallPrompt />
         <Leochi />
+        <PWARegister />
       </body>
     </html>
   );
