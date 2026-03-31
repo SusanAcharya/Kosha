@@ -346,9 +346,9 @@ export default function SessionPage() {
   const toggleMusic = useCallback(() => {
     if (audioRef.current) {
       if (musicOn) {
-        audioRef.current.pause();
+        audioRef.current.muted = true;
       } else {
-        audioRef.current.play();
+        audioRef.current.muted = false;
       }
     }
     setMusicOn(prev => !prev);
@@ -486,8 +486,8 @@ export default function SessionPage() {
             )}
 
             {/* AudioEngine — Deepgram TTS, plays sequentially */}
-            {hasStartedAudio && voiceOn && (
-              <AudioEngine script={sessionData.script} onEnd={() => { }} autoPlay={true} />
+            {hasStartedAudio && (
+              <AudioEngine script={sessionData.script} onEnd={() => { }} autoPlay={true} isMuted={!voiceOn} />
             )}
 
             <div className="sp-player-actions">

@@ -14,7 +14,7 @@ import { useRef, useState, useCallback, useEffect } from 'react';
  *  - onEnd: () => void
  *  - autoPlay: boolean — start playing immediately
  */
-export default function AudioEngine({ script, onEnd, autoPlay }) {
+export default function AudioEngine({ script, onEnd, autoPlay, isMuted = false }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentBlockIndex, setCurrentBlockIndex] = useState(-1);
   const [totalBlocks, setTotalBlocks] = useState(0);
@@ -49,6 +49,13 @@ export default function AudioEngine({ script, onEnd, autoPlay }) {
       stopAll();
     };
   }, []);
+
+  // Update muted state if it changes
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.muted = isMuted;
+    }
+  }, [isMuted]);
 
   function parseScript(text) {
     const blocks = [];
@@ -148,6 +155,7 @@ export default function AudioEngine({ script, onEnd, autoPlay }) {
       }
       const audio = audioRef.current;
       audio.src = url;
+      audio.muted = isMuted;
       audio.defaultPlaybackRate = 0.75;
       audio.playbackRate = 0.75; // Slow down TTS by 25%
       audio.onended = () => {

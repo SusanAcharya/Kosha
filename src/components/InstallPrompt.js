@@ -70,27 +70,83 @@ export default function InstallPrompt() {
   if (!showPrompt || isStandalone) return null;
 
   return (
-    <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 bg-[#161821] border border-white/10 shadow-2xl rounded-2xl flex items-center justify-between p-4 px-5 text-white w-[90%] max-w-sm" style={{ backdropFilter: 'blur(12px)' }}>
-      <div className="flex items-center gap-4">
-        <div className="bg-white/10 p-2 rounded-xl text-white">
-          <Download size={20} className="opacity-80"/>
+    <>
+      <style>{`
+        @media (min-width: 768px) {
+          .mobile-only-prompt {
+            display: none !important;
+          }
+        }
+      `}</style>
+      <div 
+        className="glass-card fade-in mobile-only-prompt" 
+        style={{
+          position: 'fixed',
+          bottom: '24px',
+          left: '16px',
+          zIndex: 100,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '6px 10px',
+          width: 'calc(100% - 32px)',
+          maxWidth: '260px',
+          boxShadow: '0 8px 16px rgba(0,0,0,0.08)',
+          borderRadius: 'var(--radius-lg)'
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ 
+            background: 'var(--steel-glow)', 
+            padding: '6px', 
+            borderRadius: 'var(--radius-md)', 
+            color: 'var(--steel)' 
+          }}>
+            <Download size={16} strokeWidth={2.5} />
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <p style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-1)', marginBottom: '1px', letterSpacing: '-0.01em' }}>
+              Install Kosha
+            </p>
+            <p style={{ fontSize: '0.65rem', color: 'var(--text-2)', lineHeight: 1.1 }}>
+              {isIOS ? "Share > Add to Home" : "Add to home screen"}
+            </p>
+          </div>
         </div>
-        <div className="flex flex-col">
-          <p className="text-sm font-medium tracking-wide">Install Kosha App</p>
-          <p className="text-xs text-white/50">{isIOS ? "Tap Share > Add to Home" : "Add to home screen"}</p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginLeft: 'auto' }}>
+          <button 
+            onClick={handleInstallClick} 
+            className="btn-primary"
+            style={{ 
+              padding: '4px 10px', 
+              fontSize: '0.7rem',
+              width: 'auto',
+              minWidth: '50px',
+              whiteSpace: 'nowrap',
+              borderRadius: 'var(--radius-full)'
+            }}
+          >
+            Install
+          </button>
+          <button 
+            onClick={handleDismiss} 
+            style={{ 
+              padding: '2px', 
+              color: 'var(--text-3)', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              borderRadius: '50%',
+              transition: 'color 0.2s',
+              cursor: 'pointer'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text-1)'}
+            onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-3)'}
+          >
+            <X size={14} strokeWidth={2.5} />
+          </button>
         </div>
       </div>
-      <div className="flex items-center gap-2 ml-4">
-        <button 
-          onClick={handleInstallClick} 
-          className="text-xs font-medium bg-white text-black px-4 py-2 rounded-full hover:bg-white/90 transition-colors"
-        >
-          {isIOS ? 'Show How' : 'Install'}
-        </button>
-        <button onClick={handleDismiss} className="text-white/50 hover:text-white transition-colors p-1">
-          <X size={16} />
-        </button>
-      </div>
-    </div>
+    </>
   );
 }
